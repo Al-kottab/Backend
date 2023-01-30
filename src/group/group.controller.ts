@@ -64,14 +64,56 @@ export class GroupController {
   }
 
   @Get('/:id/students')
+  getGroupStudents(@Param(':id') groupId: string) {
+    return this.groupService.getGroupStudents(groupId);
+  }
   @Get('/:id/students/status/incomplete')
+  getUnhafezStudents(@Param(':id') groupId: string) {
+    return this.groupService.getUnhafezStudents(groupId);
+  }
   @Post('/:id/students/:student_id/status/complete')
+  markStudentAsHafez(
+    @Param(':id') groupId: string,
+    @Param(':student_id') studentId: string,
+  ) {
+    return this.groupService.markStudentAsHafez(groupId, studentId);
+  }
   @Put('/:id/students/me')
+  askToJoinGroup(@Param(':id') groupId: string) {
+    return this.groupService.askToJoinAGroup(groupId);
+  }
   @Delete('/:id/students/me')
+  leaveGroup(@Param(':id') groupId: string) {
+    return this.groupService.leave(groupId);
+  }
   @Put('/:id/students/:student_id')
+  acceptUserToJoinAGroup(
+    @Param(':id') groupId: string,
+    @Param(':student_id') studentId: string,
+  ) {
+    return this.groupService.acceptStudent(groupId, studentId);
+  }
   @Delete('/:id/students/:student_id')
+  deleteUserFromAGroup(
+    @Param(':id') groupId: string,
+    @Param(':student_id') studentId: string,
+  ) {
+    return this.groupService.deleteStudent(groupId, studentId);
+  }
   @Post('/:id/students/:student_id/badge')
+  giveBadgeToStudent(
+    @Param(':id') groupId: string,
+    @Param(':student_id') studentId: string,
+  ) {
+    return this.groupService.giveBadgeToStudent(groupId, studentId);
+  }
   @Delete('/:id/students/:student_id/badge')
+  removeBadgeFromStudent(
+    @Param(':id') groupId: string,
+    @Param(':student_id') studentId: string,
+  ) {
+    return this.groupService.removeBadgeFromStudent(groupId, studentId);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupService.remove(+id);
