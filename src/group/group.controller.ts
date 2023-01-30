@@ -9,7 +9,6 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
-  Req,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
