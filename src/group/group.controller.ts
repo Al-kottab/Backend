@@ -14,6 +14,7 @@ import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AnnouncementDto } from './dto/announcements.dto';
 
 @Controller('groups')
 export class GroupController {
@@ -83,7 +84,7 @@ export class GroupController {
   }
   @Delete('/:id/students/me')
   leaveGroup(@Param(':id') groupId: string) {
-    return this.groupService.leave(groupId);
+    return this.groupService.leaveGroup(groupId);
   }
   @Put('/:id/students/:student_id')
   acceptUserToJoinAGroup(
