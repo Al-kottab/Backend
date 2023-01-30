@@ -63,6 +63,15 @@ export class GroupController {
     return this.groupService.createAnnouncement(groupId, announcementDto);
   }
 
+  @Get('/:id/students')
+  @Get('/:id/students/status/incomplete')
+  @Post('/:id/students/:student_id/status/complete')
+  @Put('/:id/students/me')
+  @Delete('/:id/students/me')
+  @Put('/:id/students/:student_id')
+  @Delete('/:id/students/:student_id')
+  @Post('/:id/students/:student_id/badge')
+  @Delete('/:id/students/:student_id/badge')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupService.remove(+id);
