@@ -1,2 +1,2 @@
 # Backend
-repo hold the great backend files
+This repository holds the great backend files.
