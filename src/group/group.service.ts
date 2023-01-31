@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AnnouncementDto } from './dto/create-announcements.dto';
+import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
 @Injectable()
@@ -32,7 +33,7 @@ export class GroupService {
   getGroupStudents(groupId: string) {
     return [];
   }
-  createAnnouncement(groupId: string, announcementDto: AnnouncementDto) {
+  createAnnouncement(groupId: string, announcementDto: CreateAnnouncementDto) {
     return { status: 'success' };
   }
   getAnnouncements(groupId: string) {
@@ -49,18 +50,23 @@ export class GroupService {
   }
 
   findAll() {
-    return `This action returns all group`;
+    return [];
   }
 
   findOne(id: number) {
-    return { id: 'group_id', name: 'group_name' };
+    const dto: ReturnedGroupDto = {
+      createdAt: new Date(),
+      id: 'id',
+      logo: '/path/to/logo',
+      name: 'group name',
+    };
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {
-    return `This action updates a #${id} group`;
+    return { status: 'success' };
   }
 
   remove(id: number) {
-    return `This action removes a #${id} group`;
+    return { status: 'success' };
   }
 }
