@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class OrganizationResponseDto {
+export class ReturnedOrganizationDto {
   @ApiProperty({ example: '456e2', required: true })
   @IsString()
   @IsNotEmpty()

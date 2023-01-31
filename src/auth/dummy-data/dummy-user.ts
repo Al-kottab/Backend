@@ -1,6 +1,6 @@
-import { UserResponseDto } from '../dto/user-response.dto';
+import { ReturnedUserDto } from '../dto/returned-user.dto';
 
-export const userResponseDto: UserResponseDto = {
+export const returnedUserDto: ReturnedUserDto = {
   id: '456e2',
   name: 'معاذ محمد',
   username: 'MoazHassan2022',

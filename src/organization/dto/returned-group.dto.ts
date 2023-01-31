@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GroupResponseDto {
+export class ReturnedGroupDto {
   @ApiProperty({ example: '456e2', required: true })
   @IsString()
   @IsNotEmpty()

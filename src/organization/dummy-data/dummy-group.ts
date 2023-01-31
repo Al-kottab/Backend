@@ -1,6 +1,6 @@
-import { GroupResponseDto } from '../dto/group-response.dto';
+import { ReturnedGroupDto } from '../dto/returned-group.dto';
 
-export const groupResponseDto: GroupResponseDto = {
+export const returnedGroupDto: ReturnedGroupDto = {
   id: '456e2',
   name: 'الحق',
   dailyAppointment: 15,

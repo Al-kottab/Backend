@@ -6,7 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 const initializeApiDocumentation = (app: INestApplication) => {
   const config = new DocumentBuilder()
-    .setTitle('Alkottab documentation')
+    .setTitle('Al-Kottab API Documentation')
     .setDescription(
       'This is an API documentation for Al-Kottab web application',
     )

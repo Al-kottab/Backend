@@ -1,6 +1,6 @@
-import { OrganizationResponseDto } from '../dto/organization-response.dto';
+import { ReturnedOrganizationDto } from '../dto/returned-organization.dto';
 
-export const organizationResponseDto: OrganizationResponseDto = {
+export const returnedOrganizationDto: ReturnedOrganizationDto = {
   id: '456e2',
   name: 'الحق',
   createdAt: '2004-05-23T14:25:10',

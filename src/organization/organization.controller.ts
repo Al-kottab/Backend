@@ -26,10 +26,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { OrganizationResponseDto } from './dto/organization-response.dto';
-import { UserResponseDto } from './dto/user-response.dto';
+import { ReturnedOrganizationDto } from './dto/returned-organization.dto';
+import { ReturnedUserDto } from '../auth/dto/returned-user.dto';
 import { CreateOrganizationGroupDto } from './dto/create-organization-group.dto';
-import { GroupResponseDto } from './dto/group-response.dto';
+import { ReturnedGroupDto } from './dto/returned-group.dto';
 
 @ApiTags('Organizations')
 @Controller('organizations')
@@ -39,7 +39,7 @@ export class OrganizationController {
   @ApiOperation({ description: 'Creates a new organization.' })
   @ApiCreatedResponse({
     description: 'The organization is created succesfully.',
-    type: OrganizationResponseDto,
+    type: ReturnedOrganizationDto,
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
@@ -55,7 +55,7 @@ export class OrganizationController {
   })
   @ApiOkResponse({
     description: 'Returned the organizations information succesfully.',
-    type: [OrganizationResponseDto],
+    type: [ReturnedOrganizationDto],
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiBearerAuth('token')
@@ -69,7 +69,7 @@ export class OrganizationController {
   })
   @ApiOkResponse({
     description: 'Returned the organization information succesfully.',
-    type: OrganizationResponseDto,
+    type: ReturnedOrganizationDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiNotFoundResponse({ description: 'Organization is not found.' })
@@ -84,7 +84,7 @@ export class OrganizationController {
   })
   @ApiOkResponse({
     description: 'Edited the organization information succesfully.',
-    type: OrganizationResponseDto,
+    type: ReturnedOrganizationDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiNotFoundResponse({ description: 'Organization is not found.' })
@@ -115,7 +115,7 @@ export class OrganizationController {
   })
   @ApiOkResponse({
     description: 'Edited the organization logo succesfully.',
-    type: OrganizationResponseDto,
+    type: ReturnedOrganizationDto,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiNotFoundResponse({ description: 'Organization is not found.' })
@@ -155,7 +155,7 @@ export class OrganizationController {
   })
   @ApiOkResponse({
     description: 'Returned the organization teachers succesfully.',
-    type: [UserResponseDto],
+    type: [ReturnedUserDto],
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiNotFoundResponse({ description: 'Organization is not found.' })
@@ -272,7 +272,7 @@ export class OrganizationController {
   })
   @ApiCreatedResponse({
     description: 'The group is created under this organization succesfully.',
-    type: GroupResponseDto,
+    type: ReturnedGroupDto,
   })
   @ApiBadRequestResponse({ description: 'Bad Request.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
@@ -292,7 +292,7 @@ export class OrganizationController {
   @ApiOkResponse({
     description:
       'Returned all groups information under this organization succesfully.',
-    type: [GroupResponseDto],
+    type: [ReturnedGroupDto],
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiNotFoundResponse({ description: 'Organization or group is not found.' })
