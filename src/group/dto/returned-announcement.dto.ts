@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReturnedAnnouncementDto {
+  @ApiProperty({ description: 'announcement id' })
+  id: string;
+
   @ApiProperty({ description: 'announcement text' })
   text: string;
 
