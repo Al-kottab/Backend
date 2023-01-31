@@ -136,6 +136,19 @@ export class GroupController {
     return this.groupService.createAnnouncement(groupId, createAnnouncementDto);
   }
 
+  @ApiOperation({ description: 'delete group announcement' })
+  @ApiCreatedResponse({ description: 'announcement deleted successfully' })
+  @ApiUnauthorizedResponse({
+    description: 'you must be the group owner delete announcement',
+  })
+  @Post('/:id/announcements/:announcement_id')
+  deleteAnnouncement(
+    @Param(':id') groupId: string,
+    @Param(':announcement_id') announcementId: string,
+  ) {
+    return this.groupService.deleteAnnouncement(groupId, announcementId);
+  }
+
   //TODO: add student dto here
   @ApiOperation({ description: 'get students of specific group' })
   @ApiOkResponse({ description: 'students are returned successfully' })

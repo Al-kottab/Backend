@@ -27,6 +27,10 @@ export class GroupService {
   markStudentAsHafez(groupId: string, studentId: string) {
     return { status: 'success' };
   }
+
+  deleteAnnouncement(groupId: string, announcementId: string) {
+    return { status: 'success' };
+  }
   getUnhafezStudents(groupId: string) {
     return [];
   }
