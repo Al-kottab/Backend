@@ -20,10 +20,13 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { ReturnedGroupDto } from './dto/returned-group.dto';
 
 @Controller('groups')
+@ApiTags('groups')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
@@ -40,7 +43,10 @@ export class GroupController {
   }
 
   @ApiOperation({ description: 'get my groups' })
-  @ApiOkResponse({ description: 'groups returned successfully' })
+  @ApiOkResponse({
+    description: 'groups returned successfully',
+    type: [ReturnedGroupDto],
+  })
   @ApiUnauthorizedResponse({
     description: 'you must login to get your groups',
   })
@@ -170,6 +176,14 @@ export class GroupController {
     return this.groupService.askToJoinAGroup(groupId);
   }
 
+  @ApiOperation({
+    description: 'leave a group or decline join request',
+  })
+  @ApiOkResponse({ description: 'group is left successfully' })
+  @ApiUnauthorizedResponse({
+    description: 'you must login as a student to do this action',
+  })
+  @ApiBadRequestResponse({ description: 'you are not inside such a group' })
   @Delete('/:id/students/me')
   leaveGroup(@Param(':id') groupId: string) {
     return this.groupService.leaveGroup(groupId);
@@ -194,6 +208,16 @@ export class GroupController {
     return this.groupService.acceptStudent(groupId, studentId);
   }
 
+  @ApiOperation({
+    description: 'Delete a student from the group, or decline student request',
+  })
+  @ApiOkResponse({ description: 'student deleted successfully' })
+  @ApiUnauthorizedResponse({
+    description: 'only group admins can do this action',
+  })
+  @ApiBadRequestResponse({
+    description: 'wrong group id or there is no request from this student',
+  })
   @Delete('/:id/students/:student_id')
   deleteUserFromAGroup(
     @Param(':id') groupId: string,
@@ -219,6 +243,18 @@ export class GroupController {
   ) {
     return this.groupService.giveBadgeToStudent(groupId, studentId);
   }
+
+  @ApiOperation({
+    description: 'remove a badge from a student',
+  })
+  @ApiOkResponse({ description: 'badge removed successfully' })
+  @ApiUnauthorizedResponse({
+    description: 'only group admins can remove students badge',
+  })
+  @ApiBadRequestResponse({
+    description:
+      'wrong group id or there is no student with this id inside the group',
+  })
   @Delete('/:id/students/:student_id/badge')
   removeBadgeFromStudent(
     @Param(':id') groupId: string,
@@ -226,6 +262,15 @@ export class GroupController {
   ) {
     return this.groupService.removeBadgeFromStudent(groupId, studentId);
   }
+
+  @ApiOperation({
+    description: 'Delete a group',
+  })
+  @ApiOkResponse({ description: 'group is deleted successfully' })
+  @ApiUnauthorizedResponse({
+    description: 'only admins can delete the group',
+  })
+  @ApiBadRequestResponse({ description: 'there is no group with this id' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupService.remove(+id);
