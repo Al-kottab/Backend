@@ -28,6 +28,7 @@ import {
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateLogoDto } from './dto/update-logo.dto';
 import { LogoUploadDto } from './dto/logo-upload.dto';
+import { ReturnedAnnouncementDto } from './dto/returned-announcement.dto';
 
 @Controller('groups')
 @ApiTags('groups')
@@ -109,7 +110,7 @@ export class GroupController {
   @ApiOperation({ description: 'get announcements of a group' })
   @ApiOkResponse({
     description: 'announcements of a group returned succssfully',
-    type: [AnnouncementDto],
+    type: [ReturnedAnnouncementDto],
   })
   @ApiBadRequestResponse({
     description: 'invalid group id',
