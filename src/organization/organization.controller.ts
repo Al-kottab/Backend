@@ -135,6 +135,10 @@ export class OrganizationController {
     schema: {
       type: 'object',
       properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
         message: {
           type: 'string',
           example: '.تم مسح المنظمة بنجاح',
@@ -173,6 +177,10 @@ export class OrganizationController {
     schema: {
       type: 'object',
       properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
         message: {
           type: 'string',
           example: '.تم إرسال طلب الدخول إلى هذه المنظمة بنجاح',
@@ -197,6 +205,10 @@ export class OrganizationController {
     schema: {
       type: 'object',
       properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
         message: {
           type: 'string',
           example: '.تم قبول طلب هذا المحفظ للدخول إلى هذه المنظمة بنجاح',
@@ -224,6 +236,10 @@ export class OrganizationController {
     schema: {
       type: 'object',
       properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
         message: {
           type: 'string',
           example: '.تم مغادرة المنظمة بنجاح',
@@ -249,6 +265,10 @@ export class OrganizationController {
     schema: {
       type: 'object',
       properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
         message: {
           type: 'string',
           example: '.تم مسح هذا المحفظ من المنظمة بنجاح',
