@@ -24,6 +24,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
+import { UpdateLogoDto } from './dto/update-logo.dto';
 
 @Controller('groups')
 @ApiTags('groups')
@@ -56,7 +57,10 @@ export class GroupController {
   }
 
   @ApiOperation({ description: 'get group by id' })
-  @ApiOkResponse({ description: 'group returned successfully' })
+  @ApiOkResponse({
+    description: 'group returned successfully',
+    type: ReturnedGroupDto,
+  })
   @ApiBadRequestResponse({
     description: 'invalid group id',
   })
@@ -76,7 +80,10 @@ export class GroupController {
   }
 
   @ApiOperation({ description: 'update group logo' })
-  @ApiCreatedResponse({ description: 'logo updated successfully' })
+  @ApiCreatedResponse({
+    description: 'logo updated successfully',
+    type: UpdateLogoDto,
+  })
   @ApiUnauthorizedResponse({
     description: 'you must be the group owner to update the logo',
   })
@@ -94,6 +101,7 @@ export class GroupController {
   @ApiOperation({ description: 'get announcements of a group' })
   @ApiOkResponse({
     description: 'announcements of a group returned succssfully',
+    type: [AnnouncementDto],
   })
   @ApiBadRequestResponse({
     description: 'invalid group id',
@@ -119,6 +127,7 @@ export class GroupController {
     return this.groupService.createAnnouncement(groupId, announcementDto);
   }
 
+  //TODO: add student dto here
   @ApiOperation({ description: 'get students of specific group' })
   @ApiOkResponse({ description: 'students are returned successfully' })
   @ApiBadRequestResponse({

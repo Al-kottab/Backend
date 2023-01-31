@@ -53,7 +53,7 @@ export class GroupService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} group`;
+    return { id: 'group_id', name: 'group_name' };
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {
