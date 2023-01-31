@@ -17,6 +17,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AnnouncementDto } from './dto/announcements.dto';
 import {
   ApiBadRequestResponse,
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -25,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateLogoDto } from './dto/update-logo.dto';
+import { LogoUploadDto } from './dto/logo-upload.dto';
 
 @Controller('groups')
 @ApiTags('groups')
@@ -79,6 +82,11 @@ export class GroupController {
     return this.groupService.update(+id, updateGroupDto);
   }
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'logo file',
+    type: LogoUploadDto,
+  })
   @ApiOperation({ description: 'update group logo' })
   @ApiCreatedResponse({
     description: 'logo updated successfully',
