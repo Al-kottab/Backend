@@ -14,7 +14,7 @@ import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AnnouncementDto } from './dto/announcements.dto';
+import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -130,9 +130,9 @@ export class GroupController {
   @Post('/:id/announcements')
   createGroupAnnouncement(
     @Param(':id') groupId: string,
-    @Body() announcementDto: AnnouncementDto,
+    @Body() createAnnouncementDto: CreateAnnouncementDto,
   ) {
-    return this.groupService.createAnnouncement(groupId, announcementDto);
+    return this.groupService.createAnnouncement(groupId, createAnnouncementDto);
   }
 
   //TODO: add student dto here

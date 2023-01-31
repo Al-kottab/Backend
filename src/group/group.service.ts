@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AnnouncementDto } from './dto/announcements.dto';
+import { AnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
