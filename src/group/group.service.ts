@@ -60,6 +60,7 @@ export class GroupService {
       logo: '/path/to/logo',
       name: 'group name',
     };
+    return dto;
   }
 
   update(id: number, updateGroupDto: UpdateGroupDto) {
