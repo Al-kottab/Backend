@@ -12,6 +12,8 @@ import {
 import { ReturnedUserDto } from 'src/auth/dto/returned-user.dto';
 import { returnedUserDto } from 'src/auth/dummy-data/dummy-user';
 import { getUserInfoDto } from './dto/get-user-info.dto';
+import { ReturnedStudentScheduleDto } from './dto/returned-student-schedule.dto';
+import { ReturnedTeacherScheduleDto } from './dto/returned-teacher-schedule.dto';
 import { ReturnedUserInfoDto } from './dto/returned-user-info.dto';
 import { updateInfoDto } from './dto/update-info.dto';
 import { UserService } from './user.service';
@@ -84,7 +86,7 @@ export class UserController {
     })
     @ApiCreatedResponse({
         description: 'returned data successfully',
-        type: ReturnedUserInfoDto,
+        type: ReturnedStudentScheduleDto,
     })
     @ApiBadRequestResponse({ description: 'Token is invalid or expired.' })
     @Get('/student/me/schedule')
@@ -98,10 +100,10 @@ export class UserController {
     })
     @ApiCreatedResponse({
         description: 'returned data successfully',
-        type: ReturnedUserInfoDto,
+        type: ReturnedTeacherScheduleDto,
     })
     @ApiBadRequestResponse({ description: 'Token is invalid or expired.' })
-    @Get('/student/me/schedule')
+    @Get('/teacher/me/schedule')
     returnTeacherScheduleDto(@Body() getUserInfoDto: getUserInfoDto) {
         return this.userService.getTeacherSchedule(getUserInfoDto);
     }
