@@ -1,26 +1,93 @@
 import { Injectable } from '@nestjs/common';
+import { CreateOrganizationGroupDto } from './dto/create-organization-group.dto';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
+import { returnedGroupDto } from './dummy-data/dummy-group';
+import { returnedOrganizationDto } from './dummy-data/dummy-organization';
+import { returnedUserDto } from '../auth/dummy-data/dummy-user';
+import { ReturnedOrganizationDto } from './dto/returned-organization.dto';
+import { ReturnedUserDto } from 'src/auth/dto/returned-user.dto';
+import { ReturnedGroupDto } from './dto/returned-group.dto';
 
 @Injectable()
 export class OrganizationService {
-  create(createOrganizationDto: CreateOrganizationDto) {
-    return 'This action adds a new organization';
+  create(
+    createOrganizationDto: CreateOrganizationDto,
+  ): ReturnedOrganizationDto {
+    return returnedOrganizationDto;
   }
 
-  findAll() {
-    return `This action returns all organization`;
+  findAll(): [ReturnedOrganizationDto] {
+    return [returnedOrganizationDto];
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} organization`;
+  findOne(id: string): ReturnedOrganizationDto {
+    return returnedOrganizationDto;
   }
 
-  update(id: string, updateOrganizationDto: UpdateOrganizationDto) {
-    return `This action updates a #${id} organization`;
+  updateInfo(
+    id: string,
+    updateOrganizationDto: UpdateOrganizationDto,
+  ): ReturnedOrganizationDto {
+    return returnedOrganizationDto;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} organization`;
+  updateLogo(id: string, logo: unknown): ReturnedOrganizationDto {
+    return returnedOrganizationDto;
+  }
+
+  remove(id: string): { status: string; message: string } {
+    return {
+      status: 'success',
+      message: '.تم مسح المنظمة بنجاح',
+    };
+  }
+
+  getAllTeachers(id: string): [ReturnedUserDto] {
+    return [returnedUserDto];
+  }
+
+  askToJoin(id: string): { status: string; message: string } {
+    return {
+      status: 'success',
+      message: '.تم إرسال طلب الدخول إلى هذه المنظمة بنجاح',
+    };
+  }
+
+  acceptJoiningRequest(
+    id: string,
+    teacherId: string,
+  ): { status: string; message: string } {
+    return {
+      status: 'success',
+      message: '.تم قبول طلب هذا المحفظ للدخول إلى هذه المنظمة بنجاح',
+    };
+  }
+
+  leave(id: string): { status: string; message: string } {
+    return {
+      status: 'success',
+      message: '.تم مغادرة المنظمة بنجاح',
+    };
+  }
+
+  deleteTeacher(
+    id: string,
+    teacherId: string,
+  ): { status: string; message: string } {
+    return {
+      status: 'success',
+      message: '.تم مسح هذا المحفظ من المنظمة بنجاح',
+    };
+  }
+
+  createGroup(
+    createOrganizationGroupDto: CreateOrganizationGroupDto,
+  ): ReturnedGroupDto {
+    return returnedGroupDto;
+  }
+
+  getAllGroups(id: string): [ReturnedGroupDto] {
+    return [returnedGroupDto];
   }
 }

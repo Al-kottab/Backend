@@ -6,13 +6,13 @@ import { ValidationPipe } from '@nestjs/common';
 
 const initializeApiDocumentation = (app: INestApplication) => {
   const config = new DocumentBuilder()
-    .setTitle('Alkottab documentation')
+    .setTitle('Al-Kottab API Documentation')
     .setDescription(
       'This is an API documentation for Al-Kottab web application',
     )
     .setVersion('1.0')
     .addTag('Al-Kottab', 'Al-Kottab API Documentation')
-    .addTag('Organization', 'Organization APIs')
+    .addTag('Organizations', 'Organizations APIs')
     .addBearerAuth(
       {
         description:
@@ -23,7 +23,7 @@ const initializeApiDocumentation = (app: INestApplication) => {
         type: 'http',
         in: 'Header',
       },
-      'token',
+      'token', // refernce it above the controller e.g. @ApiBearerAuth('token')
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
@@ -32,7 +32,7 @@ const initializeApiDocumentation = (app: INestApplication) => {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
   initializeApiDocumentation(app);
   app.useGlobalPipes(
     // For making dto to filter any attribute rather than its data
