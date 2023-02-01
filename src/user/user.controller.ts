@@ -19,7 +19,7 @@ import { updateInfoDto } from './dto/update-info.dto';
 import { UserService } from './user.service';
 
 
-@ApiTags('User')
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
     constructor(private readonly userService:UserService) {}
@@ -89,7 +89,7 @@ export class UserController {
         type: ReturnedStudentScheduleDto,
     })
     @ApiBadRequestResponse({ description: 'Token is invalid or expired.' })
-    @Get('/student/me/schedule')
+    @Get('/students/me/schedule')
     returnStudentSchedule(@Body() getUserInfoDto: getUserInfoDto) {
         return this.userService.getStudentSchedule(getUserInfoDto);
     }
@@ -103,7 +103,7 @@ export class UserController {
         type: ReturnedTeacherScheduleDto,
     })
     @ApiBadRequestResponse({ description: 'Token is invalid or expired.' })
-    @Get('/teacher/me/schedule')
+    @Get('/teachers/me/schedule')
     returnTeacherScheduleDto(@Body() getUserInfoDto: getUserInfoDto) {
         return this.userService.getTeacherSchedule(getUserInfoDto);
     }
