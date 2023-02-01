@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  username     String   @unique
+  email        String   @unique
+  createdAt    DateTime @default(now())
+  passwordHash String
+  phone        String?
+  creditCard   String?
+  photo        String?
+  student      Student?
+  teacher      Teacher?
+}
+
+model Student {
+  id           Int            @id @unique
+  user         User           @relation(fields: [id], references: [id])
+  studentBadge StudentBadge[]
+  groupStudent GroupStudent[]
+}
+
+model Teacher {
+  id                  Int                   @id @unique
+  user                User                  @relation(fields: [id], references: [id])
+  group               Group[]
+  organization        Organization[] // as a creator
+  organizationTeacher OrganizationTeacher[] // as a teacher
+}
+
+model Badge {
+  id           Int            @id @default(autoincrement())
+  name         String
+  icon         String
+  studentBadge StudentBadge[]
+}
+
+model StudentBadge {
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  badge     Badge   @relation(fields: [badgeId], references: [id])
+  badgeId   Int
+
+  @@id([studentId, badgeId])
+}
+
+model Organization {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  createdAt           DateTime              @default(now())
+  logo                String
+  description         String
+  creator             Teacher               @relation(fields: [creatorId], references: [id])
+  creatorId           Int
+  group               Group[]
+  organizationTeacher OrganizationTeacher[]
+}
+
+model Group {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  createdAt         DateTime            @default(now())
+  teacher           Teacher             @relation(fields: [teacherId], references: [id])
+  teacherId         Int
+  organization      Organization?       @relation(fields: [organizationId], references: [id])
+  organizationId    Int?
+  groupStudent      GroupStudent[]
+  GroupAppointment GroupAppointment[]
+}
+
+model OrganizationTeacher {
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  teacher        Teacher      @relation(fields: [teacherId], references: [id])
+  teacherId      Int
+
+  @@id([organizationId, teacherId])
+}
+
+model GroupStudent {
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  group     Group   @relation(fields: [groupId], references: [id])
+  groupId   Int
+
+  @@id([groupId, studentId])
+}
+
+model GroupAppointment {
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId Int
+  day     Day
+  time    String @db.Char(5)
+
+  @@id([groupId, day])
+}
+
+enum Day {
+  Sat
+  Sun
+  Mon
+  Tue
+  Wed
+  Thur
+  Fri
+}
