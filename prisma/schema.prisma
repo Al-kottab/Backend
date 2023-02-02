@@ -68,14 +68,14 @@ model Organization {
 }
 
 model Group {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  createdAt         DateTime            @default(now())
-  teacher           Teacher             @relation(fields: [teacherId], references: [id])
-  teacherId         Int
-  organization      Organization?       @relation(fields: [organizationId], references: [id])
-  organizationId    Int?
-  groupStudent      GroupStudent[]
+  id               Int                @id @default(autoincrement())
+  name             String
+  createdAt        DateTime           @default(now())
+  teacher          Teacher            @relation(fields: [teacherId], references: [id])
+  teacherId        Int
+  organization     Organization?      @relation(fields: [organizationId], references: [id])
+  organizationId   Int?
+  groupStudent     GroupStudent[]
   GroupAppointment GroupAppointment[]
 }
 
