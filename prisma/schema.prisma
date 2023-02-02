@@ -17,7 +17,7 @@ model User {
   email        String   @unique
   createdAt    DateTime
   passwordHash String
-  phone        String
+  phone        String?
   creditCard   String?
   photo        String?
   Student      Student?
@@ -31,10 +31,11 @@ model Student {
 }
 
 model Teacher {
-  id           Int            @id @unique
-  user         User           @relation(fields: [id], references: [id])
-  Group        Group[]
-  Organization Organization[]
+  id                  Int                   @id @unique
+  user                User                  @relation(fields: [id], references: [id])
+  Group               Group[]
+  Organization        Organization[]
+  OrganizationTeacher OrganizationTeacher[]
 }
 
 model Badge {
@@ -54,14 +55,15 @@ model StudentBadge {
 }
 
 model Organization {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  createdAt   DateTime
-  logo        String
-  description String
-  creator     Teacher  @relation(fields: [creatorId], references: [id])
-  creatorId   Int
-  Group       Group[]
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  createdAt           DateTime
+  logo                String
+  description         String
+  creator             Teacher               @relation(fields: [creatorId], references: [id])
+  creatorId           Int
+  Group               Group[]
+  OrganizationTeacher OrganizationTeacher[]
 }
 
 model Group {
@@ -72,4 +74,13 @@ model Group {
   teacherId      Int
   organization   Organization? @relation(fields: [organizationId], references: [id])
   organizationId Int?
+}
+
+model OrganizationTeacher {
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  teacher        Teacher      @relation(fields: [teacherId], references: [id])
+  teacherId      Int
+
+  @@id([organizationId, teacherId])
 }
