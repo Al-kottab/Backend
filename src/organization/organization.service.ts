@@ -8,9 +8,12 @@ import { ReturnedOrganizationDto } from './dto/returned-organization.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { ReturnedUserDto } from '../user/dto/returned-user.dto';
 import { returnedUserDto } from '../user/dummy-data/dummy-user';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class OrganizationService {
+  constructor(private prisma: PrismaService) {}
+
   create(
     createOrganizationDto: CreateOrganizationDto,
   ): ReturnedOrganizationDto {
