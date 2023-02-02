@@ -25,20 +25,22 @@ model User {
 }
 
 model Student {
-  id            Int             @id @unique
-  user          User            @relation(fields: [id], references: [id])
+  id           Int            @id @unique
+  user         User           @relation(fields: [id], references: [id])
   StudentBadge StudentBadge[]
 }
 
 model Teacher {
-  id   Int  @id @unique
-  user User @relation(fields: [id], references: [id])
+  id           Int            @id @unique
+  user         User           @relation(fields: [id], references: [id])
+  Group        Group[]
+  Organization Organization[]
 }
 
 model Badge {
-  id            Int             @id @default(autoincrement())
-  name          String
-  icon          String
+  id           Int            @id @default(autoincrement())
+  name         String
+  icon         String
   StudentBadge StudentBadge[]
 }
 
@@ -49,4 +51,25 @@ model StudentBadge {
   badgeId   Int
 
   @@id([studentId, badgeId])
+}
+
+model Organization {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  createdAt   DateTime
+  logo        String
+  description String
+  creator     Teacher  @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  Group       Group[]
+}
+
+model Group {
+  id             Int           @id @default(autoincrement())
+  name           String
+  createdAt      DateTime
+  teacher        Teacher       @relation(fields: [teacherId], references: [id])
+  teacherId      Int
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId Int?
 }
