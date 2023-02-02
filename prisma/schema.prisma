@@ -35,8 +35,8 @@ model Teacher {
   id                  Int                   @id @unique
   user                User                  @relation(fields: [id], references: [id])
   Group               Group[]
-  Organization        Organization[]
-  OrganizationTeacher OrganizationTeacher[]
+  Organization        Organization[] // as a creator
+  OrganizationTeacher OrganizationTeacher[] // as a teacher
 }
 
 model Badge {
