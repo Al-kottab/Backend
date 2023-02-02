@@ -68,14 +68,15 @@ model Organization {
 }
 
 model Group {
-  id             Int            @id @default(autoincrement())
-  name           String
-  createdAt      DateTime
-  teacher        Teacher        @relation(fields: [teacherId], references: [id])
-  teacherId      Int
-  organization   Organization?  @relation(fields: [organizationId], references: [id])
-  organizationId Int?
-  GroupStudent   GroupStudent[]
+  id                Int                 @id @default(autoincrement())
+  name              String
+  createdAt         DateTime
+  teacher           Teacher             @relation(fields: [teacherId], references: [id])
+  teacherId         Int
+  organization      Organization?       @relation(fields: [organizationId], references: [id])
+  organizationId    Int?
+  GroupStudent      GroupStudent[]
+  GroupAppointement GroupAppointement[]
 }
 
 model OrganizationTeacher {
@@ -94,4 +95,23 @@ model GroupStudent {
   groupId   Int
 
   @@id([groupId, studentId])
+}
+
+model GroupAppointement {
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId Int
+  day     Day
+  time    String @db.Char(5)
+
+  @@id([groupId, day])
+}
+
+enum Day {
+  Sat
+  Sun
+  Mon
+  Tue
+  Wed
+  Thur
+  Fri
 }
