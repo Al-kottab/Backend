@@ -15,7 +15,7 @@ model User {
   name         String
   username     String   @unique
   email        String   @unique
-  createdAt    DateTime
+  createdAt    DateTime @default(now())
   passwordHash String
   phone        String?
   creditCard   String?
@@ -58,7 +58,7 @@ model StudentBadge {
 model Organization {
   id                  Int                   @id @default(autoincrement())
   name                String                @unique
-  createdAt           DateTime
+  createdAt           DateTime              @default(now())
   logo                String
   description         String
   creator             Teacher               @relation(fields: [creatorId], references: [id])
@@ -70,7 +70,7 @@ model Organization {
 model Group {
   id                Int                 @id @default(autoincrement())
   name              String
-  createdAt         DateTime
+  createdAt         DateTime            @default(now())
   teacher           Teacher             @relation(fields: [teacherId], references: [id])
   teacherId         Int
   organization      Organization?       @relation(fields: [organizationId], references: [id])
