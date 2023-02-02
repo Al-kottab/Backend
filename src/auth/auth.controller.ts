@@ -7,6 +7,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthSignupDto } from './dto/auth-signup.dto';
@@ -106,6 +107,7 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized Request.' })
   @ApiBadRequestResponse({ description: 'Password is incorrect.' })
+  @ApiBearerAuth('token')
   @Patch('password')
   changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     return this.authService.changePassword(changePasswordDto);
