@@ -22,4 +22,8 @@ describe('PrismaService', () => {
       await expect(service.$connect()).resolves.not.toThrowError();
     });
   });
+
+  afterAll(async () => {
+    service.cleanDb();
+  });
 });
