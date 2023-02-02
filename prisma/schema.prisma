@@ -22,6 +22,8 @@ model User {
   photo        String?
   student      Student?
   teacher      Teacher?
+
+  @@map("users")
 }
 
 model Student {
@@ -29,6 +31,8 @@ model Student {
   user         User           @relation(fields: [id], references: [id])
   studentBadge StudentBadge[]
   groupStudent GroupStudent[]
+
+  @@map("students")
 }
 
 model Teacher {
@@ -37,6 +41,8 @@ model Teacher {
   group               Group[]
   organization        Organization[] // as a creator
   organizationTeacher OrganizationTeacher[] // as a teacher
+
+  @@map("teachers")
 }
 
 model Badge {
@@ -44,6 +50,8 @@ model Badge {
   name         String
   icon         String
   studentBadge StudentBadge[]
+
+  @@map("badges")
 }
 
 model StudentBadge {
@@ -53,6 +61,7 @@ model StudentBadge {
   badgeId   Int
 
   @@id([studentId, badgeId])
+  @@map("studentBadges")
 }
 
 model Organization {
@@ -65,6 +74,8 @@ model Organization {
   creatorId           Int
   group               Group[]
   organizationTeacher OrganizationTeacher[]
+
+  @@map("organizations")
 }
 
 model Group {
@@ -77,6 +88,8 @@ model Group {
   organizationId   Int?
   groupStudent     GroupStudent[]
   GroupAppointment GroupAppointment[]
+
+  @@map("groups")
 }
 
 model OrganizationTeacher {
@@ -86,6 +99,7 @@ model OrganizationTeacher {
   teacherId      Int
 
   @@id([organizationId, teacherId])
+  @@map("organizaitonTeachers")
 }
 
 model GroupStudent {
@@ -95,6 +109,7 @@ model GroupStudent {
   groupId   Int
 
   @@id([groupId, studentId])
+  @@map("groupStudents")
 }
 
 model GroupAppointment {
@@ -104,6 +119,7 @@ model GroupAppointment {
   time    String @db.Char(5)
 
   @@id([groupId, day])
+  @@map("groupAppointments")
 }
 
 enum Day {
