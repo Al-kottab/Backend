@@ -14,8 +14,8 @@ import { AuthDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { ResetForgottenPasswordDto } from './dto/reset-forgotten-password.dto';
-import { ReturnedUserAndTokenSignupDto } from './dto/returned-user-and-token-signup.dto';
-import { ReturnedUserAndTokenDto } from './dto/returned-user-and-token.dto';
+import { ReturnedUserAndTokenSignupDto } from '../user/dto/returned-user-and-token-signup.dto';
+import { ReturnedUserAndTokenDto } from '../user/dto/returned-user-and-token.dto';
 
 @ApiTags('Auth')
 @Controller('accounts')
