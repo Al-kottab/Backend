@@ -28,6 +28,7 @@ model Student {
   id           Int            @id @unique
   user         User           @relation(fields: [id], references: [id])
   StudentBadge StudentBadge[]
+  GroupStudent GroupStudent[]
 }
 
 model Teacher {
@@ -67,13 +68,14 @@ model Organization {
 }
 
 model Group {
-  id             Int           @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   name           String
   createdAt      DateTime
-  teacher        Teacher       @relation(fields: [teacherId], references: [id])
+  teacher        Teacher        @relation(fields: [teacherId], references: [id])
   teacherId      Int
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
   organizationId Int?
+  GroupStudent   GroupStudent[]
 }
 
 model OrganizationTeacher {
@@ -83,4 +85,13 @@ model OrganizationTeacher {
   teacherId      Int
 
   @@id([organizationId, teacherId])
+}
+
+model GroupStudent {
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  group     Group   @relation(fields: [groupId], references: [id])
+  groupId   Int
+
+  @@id([groupId, studentId])
 }
