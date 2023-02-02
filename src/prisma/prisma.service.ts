@@ -8,10 +8,7 @@ export class PrismaService extends PrismaClient {
     super({
       datasources: {
         db: {
-          url: (() => {
-            console.log(config.get('DATABASE_URL'));
-            return config.get('DATABASE_URL');
-          })(),
+          url: config.get('DATABASE_URL'),
         },
       },
     });
