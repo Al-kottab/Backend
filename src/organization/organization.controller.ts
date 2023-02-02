@@ -27,9 +27,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ReturnedOrganizationDto } from './dto/returned-organization.dto';
-import { ReturnedUserDto } from '../auth/dto/returned-user.dto';
 import { CreateOrganizationGroupDto } from './dto/create-organization-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
+import { ReturnedUserDto } from '../user/dto/returned-user.dto';
 
 @ApiTags('Organizations')
 @Controller('organizations')

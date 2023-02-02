@@ -4,10 +4,10 @@ import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { returnedGroupDto } from './dummy-data/dummy-group';
 import { returnedOrganizationDto } from './dummy-data/dummy-organization';
-import { returnedUserDto } from '../auth/dummy-data/dummy-user';
 import { ReturnedOrganizationDto } from './dto/returned-organization.dto';
-import { ReturnedUserDto } from 'src/auth/dto/returned-user.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
+import { ReturnedUserDto } from '../user/dto/returned-user.dto';
+import { returnedUserDto } from '../user/dummy-data/dummy-user';
 
 @Injectable()
 export class OrganizationService {

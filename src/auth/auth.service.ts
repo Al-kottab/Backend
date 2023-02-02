@@ -4,10 +4,10 @@ import { AuthDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { ResetForgottenPasswordDto } from './dto/reset-forgotten-password.dto';
-import { ReturnedUserAndTokenSignupDto } from './dto/returned-user-and-token-signup.dto';
-import { ReturnedUserAndTokenDto } from './dto/returned-user-and-token.dto';
-import { returnedUserAndTokenDto } from './dummy-data/dummy-user-and-token';
-import { returnedUserAndTokenSignupDto } from './dummy-data/dummy-user-and-token-signup';
+import { ReturnedUserAndTokenSignupDto } from '../user/dto/returned-user-and-token-signup.dto';
+import { returnedUserAndTokenSignupDto } from '../user/dummy-data/dummy-user-and-token-signup';
+import { ReturnedUserAndTokenDto } from '../user/dto/returned-user-and-token.dto';
+import { returnedUserAndTokenDto } from '../user/dummy-data/dummy-user-and-token';
 
 @Injectable()
 export class AuthService {
