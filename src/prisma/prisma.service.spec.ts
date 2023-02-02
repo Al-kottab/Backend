@@ -13,13 +13,13 @@ describe('PrismaService', () => {
     service = module.get<PrismaService>(PrismaService);
   });
 
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
   describe('test prisma connection', () => {
     it('must be connected', async () => {
       await expect(service.$connect()).resolves.not.toThrowError();
     });
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
   });
 });
