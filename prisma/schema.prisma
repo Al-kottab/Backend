@@ -25,11 +25,28 @@ model User {
 }
 
 model Student {
-  userId Int  @id @unique
-  user   User @relation(fields: [userId], references: [id])
+  id            Int             @id @unique
+  user          User            @relation(fields: [id], references: [id])
+  StudentBadge StudentBadge[]
 }
 
 model Teacher {
-  userId Int  @id @unique
-  user   User @relation(fields: [userId], references: [id])
+  id   Int  @id @unique
+  user User @relation(fields: [id], references: [id])
+}
+
+model Badge {
+  id            Int             @id @default(autoincrement())
+  name          String
+  icon          String
+  StudentBadge StudentBadge[]
+}
+
+model StudentBadge {
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  badge     Badge   @relation(fields: [badgeId], references: [id])
+  badgeId   Int
+
+  @@id([studentId, badgeId])
 }
