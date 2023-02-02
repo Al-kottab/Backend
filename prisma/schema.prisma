@@ -20,30 +20,30 @@ model User {
   phone        String?
   creditCard   String?
   photo        String?
-  Student      Student?
-  Teacher      Teacher?
+  student      Student?
+  teacher      Teacher?
 }
 
 model Student {
   id           Int            @id @unique
   user         User           @relation(fields: [id], references: [id])
-  StudentBadge StudentBadge[]
-  GroupStudent GroupStudent[]
+  studentBadge StudentBadge[]
+  groupStudent GroupStudent[]
 }
 
 model Teacher {
   id                  Int                   @id @unique
   user                User                  @relation(fields: [id], references: [id])
-  Group               Group[]
-  Organization        Organization[] // as a creator
-  OrganizationTeacher OrganizationTeacher[] // as a teacher
+  group               Group[]
+  organization        Organization[] // as a creator
+  organizationTeacher OrganizationTeacher[] // as a teacher
 }
 
 model Badge {
   id           Int            @id @default(autoincrement())
   name         String
   icon         String
-  StudentBadge StudentBadge[]
+  studentBadge StudentBadge[]
 }
 
 model StudentBadge {
@@ -63,8 +63,8 @@ model Organization {
   description         String
   creator             Teacher               @relation(fields: [creatorId], references: [id])
   creatorId           Int
-  Group               Group[]
-  OrganizationTeacher OrganizationTeacher[]
+  group               Group[]
+  organizationTeacher OrganizationTeacher[]
 }
 
 model Group {
@@ -75,8 +75,8 @@ model Group {
   teacherId         Int
   organization      Organization?       @relation(fields: [organizationId], references: [id])
   organizationId    Int?
-  GroupStudent      GroupStudent[]
-  GroupAppointement GroupAppointement[]
+  groupStudent      GroupStudent[]
+  GroupAppointment GroupAppointment[]
 }
 
 model OrganizationTeacher {
@@ -97,7 +97,7 @@ model GroupStudent {
   @@id([groupId, studentId])
 }
 
-model GroupAppointement {
+model GroupAppointment {
   group   Group  @relation(fields: [groupId], references: [id])
   groupId Int
   day     Day
