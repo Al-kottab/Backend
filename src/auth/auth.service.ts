@@ -8,9 +8,12 @@ import { ReturnedUserAndTokenSignupDto } from '../user/dto/returned-user-and-tok
 import { returnedUserAndTokenSignupDto } from '../user/dummy-data/dummy-user-and-token-signup';
 import { ReturnedUserAndTokenDto } from '../user/dto/returned-user-and-token.dto';
 import { returnedUserAndTokenDto } from '../user/dummy-data/dummy-user-and-token';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
+  constructor(private prisma: PrismaService) {}
+
   login(authDto: AuthDto): ReturnedUserAndTokenDto {
     return returnedUserAndTokenDto;
   }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
@@ -6,6 +7,8 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 
 @Injectable()
 export class GroupService {
+  constructor(private prisma: PrismaService) {}
+
   removeBadgeFromStudent(groupId: string, studentId: string) {
     return { status: 'success' };
   }
