@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ReturnedStudentScheduleDto {
-  @ApiProperty({ example: '1e234', required: true })
+  @ApiProperty({ example: 68, required: true })
   @IsString()
   @IsNotEmpty()
-  groupId: string;
+  groupId: number;
   @ApiProperty({ example: 'group 1', required: true })
   @IsString()
   @IsNotEmpty()
@@ -18,10 +18,10 @@ export class ReturnedStudentScheduleDto {
   @IsString()
   @IsNotEmpty()
   appointment: string;
-  @ApiProperty({ example: '1e2168', required: false })
+  @ApiProperty({ example: 34, required: false })
   @IsString()
   @IsOptional()
-  organizationId: string;
+  organizationId: number;
   @ApiProperty({ example: 'organization 1', required: false })
   @IsString()
   @IsOptional()

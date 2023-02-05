@@ -2,10 +2,9 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReturnedUserDto {
-  @ApiProperty({ example: '456e2', required: true })
-  @IsString()
+  @ApiProperty({ example: 4587, required: true })
   @IsNotEmpty()
-  id: string;
+  id: number;
   @ApiProperty({ example: 'معاذ محمد', required: true })
   @IsString()
   @IsNotEmpty()
@@ -19,9 +18,8 @@ export class ReturnedUserDto {
   @IsNotEmpty()
   email: string;
   @ApiProperty({ example: '2004-05-23T14:25:10', required: true })
-  @IsString()
   @IsNotEmpty()
-  createdAt: string;
+  createdAt: Date;
   @ApiProperty({ example: '+201060534698', required: false })
   @IsString()
   @IsOptional()
