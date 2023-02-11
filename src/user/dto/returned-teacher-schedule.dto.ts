@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ReturnedTeacherScheduleDto {
   @ApiProperty({ example: 12345, required: true })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   groupId: number;
   @ApiProperty({ example: 'group 1', required: true })
@@ -15,7 +15,7 @@ export class ReturnedTeacherScheduleDto {
   @IsNotEmpty()
   appointment: string;
   @ApiProperty({ example: 3154, required: false })
-  @IsString()
+  @IsNumber()
   @IsOptional()
   organizationId: number;
   @ApiProperty({ example: 'organization 1', required: false })

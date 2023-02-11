@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthSignupDto } from './dto/auth-signup.dto';
 import { AuthDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -30,16 +30,16 @@ export class AuthService {
       },
     });
     // if user does not exist throw exception
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    if (!user) throw new UnauthorizedException('Credentials incorrect');
 
     // compare password
     const pwMatches = await argon.verify(user.passwordHash, authDto.password);
     // if password incorrect throw exception
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    if (!pwMatches) throw new UnauthorizedException('Credentials incorrect');
     const token = await this.signToken(user.id, user.email);
     delete user.passwordHash;
     return {
-      status: 'signed in',
+      status: 'success',
       token: token.access_token,
       user,
     };
@@ -72,7 +72,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ForbiddenException('Credentials taken');
+          throw new UnauthorizedException('Credentials taken');
         }
       }
       throw error;
@@ -90,7 +90,7 @@ export class AuthService {
     const secret = this.config.get('JWT_SECRET');
 
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: '12h',
       secret: secret,
     });
 
