@@ -22,6 +22,9 @@ model User {
   photo        String?
   student      Student?
   teacher      Teacher?
+  groupAnnouncement GroupAnnouncement[] // TODO: move this to teacher when token has type in it
+  group Group[] // TODO: remove this when token has type in it
+  groupStudent GroupStudent[] // TODO: remove this when token has type in it
 
   @@map("users")
 }
@@ -30,7 +33,7 @@ model Student {
   id           Int            @id @unique
   user         User           @relation(fields: [id], references: [id])
   studentBadge StudentBadge[]
-  groupStudent GroupStudent[]
+  //groupStudent GroupStudent[] // TODO: uncomment this when token has type in it
 
   @@map("students")
 }
@@ -38,7 +41,7 @@ model Student {
 model Teacher {
   id                  Int                   @id @unique
   user                User                  @relation(fields: [id], references: [id])
-  group               Group[]
+  // group               Group[] // TODO: uncomment this when token has type in it
   organization        Organization[] // as a creator
   organizationTeacher OrganizationTeacher[] // as a teacher
 
@@ -82,12 +85,15 @@ model Group {
   id               Int                @id @default(autoincrement())
   name             String
   createdAt        DateTime           @default(now())
-  teacher          Teacher            @relation(fields: [teacherId], references: [id])
-  teacherId        Int
+  //teacher          Teacher            @relation(fields: [teacherId], references: [id])
+  //teacherId        Int
+  user          User            @relation(fields: [userId], references: [id]) // TODO: change this to teacher when token has type in it
+  userId        Int // TODO: change this to teacher when token has type in it
   organization     Organization?      @relation(fields: [organizationId], references: [id])
   organizationId   Int?
   groupStudent     GroupStudent[]
-  GroupAppointment GroupAppointment[]
+  groupAppointment GroupAppointment[]
+  groupAnnouncement GroupAnnouncement[]
 
   @@map("groups")
 }
@@ -103,12 +109,14 @@ model OrganizationTeacher {
 }
 
 model GroupStudent {
-  student   Student @relation(fields: [studentId], references: [id])
-  studentId Int
+  //student   Student @relation(fields: [studentId], references: [id])
+  //studentId Int
+  user          User            @relation(fields: [userId], references: [id]) // TODO: change this to student when token has type in it
+  userId        Int // TODO: change this to student when token has type in it
   group     Group   @relation(fields: [groupId], references: [id])
   groupId   Int
 
-  @@id([groupId, studentId])
+  @@id([groupId, userId]) // TODO: change this to student when token has type in it
   @@map("groupStudents")
 }
 
@@ -120,6 +128,18 @@ model GroupAppointment {
 
   @@id([groupId, day])
   @@map("groupAppointments")
+}
+
+model GroupAnnouncement {
+  id               Int                @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id]) // TODO: change this to teacher when token has type in it
+  userId Int // TODO: change this to teacher when token has type in it
+  group     Group   @relation(fields: [groupId], references: [id])
+  groupId   Int
+  text String
+  createdAt        DateTime           @default(now())
+
+  @@map("groupAnnouncemets")
 }
 
 enum Day {

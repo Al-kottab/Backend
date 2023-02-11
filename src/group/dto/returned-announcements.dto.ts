@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AnnouncementDto } from './announcement.dto';
 
-export class ReturnedAnnouncementDto {
+export class ReturnedAnnouncementsDto {
   @ApiProperty({ example: 'success' })
   status: string;
 
   @ApiProperty({ description: 'announcement text' })
-  announcement: AnnouncementDto;
+  announcements: [AnnouncementDto];
 }

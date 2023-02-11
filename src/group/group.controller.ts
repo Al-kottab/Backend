@@ -9,6 +9,8 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -17,9 +19,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -29,6 +34,10 @@ import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateLogoDto } from './dto/update-logo.dto';
 import { LogoUploadDto } from './dto/logo-upload.dto';
 import { ReturnedAnnouncementDto } from './dto/returned-announcement.dto';
+import { JwtGuard } from '../auth/guard';
+import { GetUser } from '../auth/decorator';
+import { GroupAnnouncement } from '@prisma/client';
+import { ReturnedAnnouncementsDto } from './dto/returned-announcements.dto';
 
 @Controller('groups')
 @ApiTags('groups')
@@ -105,48 +114,81 @@ export class GroupController {
     return this.groupService.uploadLogo(groupId, file);
   }
 
-  //TODO: decorator to make sure that user is joining the group
-
-  @ApiOperation({ description: 'get announcements of a group' })
+  @ApiOperation({ description: 'get announcements of a group.' })
   @ApiOkResponse({
-    description: 'announcements of a group returned succssfully',
-    type: [ReturnedAnnouncementDto],
+    description: 'announcements of a group returned succssfully.',
+    type: ReturnedAnnouncementsDto,
   })
-  @ApiBadRequestResponse({
-    description: 'invalid group id',
-  })
+  @ApiNotFoundResponse({ description: 'group is not found.' })
   @ApiUnauthorizedResponse({
-    description: 'you must be inside the group to get the group announcements',
+    description: 'you must be inside the group to get the group announcements.',
   })
-  @Get('/:id/announcements')
-  getGroupAnnouncements(@Param('id') groupId: string) {
-    return this.groupService.getAnnouncements(groupId);
+  @ApiBearerAuth('token')
+  @UseGuards(JwtGuard)
+  @Get(':id/announcements')
+  getGroupAnnouncements(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) groupId: number,
+  ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
+    return this.groupService.getAnnouncements(groupId, userId);
   }
 
-  @ApiOperation({ description: 'create group announcement' })
-  @ApiCreatedResponse({ description: 'announcement created successfully' })
+  @ApiOperation({ description: 'create group announcement.' })
+  @ApiCreatedResponse({ description: 'announcement is created successfully.' })
   @ApiUnauthorizedResponse({
-    description: 'you must be the group owner create announcement',
+    description: 'you must be the group owner to create announcement.',
+    type: ReturnedAnnouncementDto,
   })
-  @Post('/:id/announcements')
+  @ApiNotFoundResponse({ description: 'group is not found.' })
+  @ApiBearerAuth('token')
+  @UseGuards(JwtGuard) // TODO: change this to teacher guard when token has type in it
+  @Post(':id/announcements')
   createGroupAnnouncement(
-    @Param(':id') groupId: string,
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('id') userId: number, // TODO: change this to get teacher when token has type in it
     @Body() createAnnouncementDto: CreateAnnouncementDto,
-  ) {
-    return this.groupService.createAnnouncement(groupId, createAnnouncementDto);
+  ): Promise<{ status: string; announcement: GroupAnnouncement }> {
+    return this.groupService.createAnnouncement(
+      groupId,
+      userId,
+      createAnnouncementDto,
+    );
   }
 
-  @ApiOperation({ description: 'delete group announcement' })
-  @ApiCreatedResponse({ description: 'announcement deleted successfully' })
-  @ApiUnauthorizedResponse({
-    description: 'you must be the group owner delete announcement',
+  @ApiOperation({ description: 'delete group announcement.' })
+  @ApiNoContentResponse({
+    description: 'deleted the organization succesfully.',
+    schema: {
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          example: 'success',
+        },
+        message: {
+          type: 'string',
+          example: '!تم مسح الإعلان بنجاح',
+        },
+      },
+    },
   })
-  @Post('/:id/announcements/:announcement_id')
+  @ApiNotFoundResponse({ description: 'group is not found.' })
+  @ApiUnauthorizedResponse({
+    description: 'you must be the group owner to delete announcement.',
+  })
+  @ApiBearerAuth('token')
+  @UseGuards(JwtGuard) // TODO: change this to teacher guard when token has type in it
+  @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
-    @Param(':id') groupId: string,
-    @Param(':announcement_id') announcementId: string,
-  ) {
-    return this.groupService.deleteAnnouncement(groupId, announcementId);
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('id') userId: number, // TODO: change this to get teacher when token has type in it
+    @Param('announcement_id', ParseIntPipe) announcementId: number,
+  ): Promise<{ status: string; message: string }> {
+    return this.groupService.deleteAnnouncement(
+      groupId,
+      userId,
+      announcementId,
+    );
   }
 
   //TODO: add student dto here
