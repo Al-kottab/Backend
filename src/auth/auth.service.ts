@@ -41,7 +41,7 @@ export class AuthService {
     // if password incorrect throw exception
     if (!pwMatches) throw new UnauthorizedException('Credentials incorrect');
     let token;
-    const teacher = this.prisma.teacher.findUnique({
+    const teacher = await this.prisma.teacher.findUnique({
       where: {
         id: user.id,
       },
