@@ -167,7 +167,7 @@ export class GroupController {
         },
         message: {
           type: 'string',
-          example: '!تم مسح الإعلان بنجاح',
+          example: '!تم حذف الإعلان بنجاح',
         },
       },
     },

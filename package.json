@@ -9,7 +9,7 @@
     "db:dev:rm": "docker compose rm dev-db -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
     "prisma:dev:deploy": "prisma migrate deploy",
-    "prisma:dev:migrate": "prisma migrate dev",
+    "migrate": "prisma migrate dev",
     "prisma:dev:studio": "prisma studio",
     "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 3 && npm run prisma:dev:deploy",
     "db:dev:restart:win": "npm run db:dev:rm && npm run db:dev:up && timeout /t 3 /nobreak && npm run prisma:dev:deploy",
