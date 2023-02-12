@@ -33,6 +33,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "npm run db:test:restart",
     "test:e2e": "dotenv -e .env.test -- jest --watchAll --no-cache --config ./test/jest-e2e.json",
+    "pretest:e2e:win": "npm run db:test:restart:win",
+    "test:e2e:win": "dotenv -e .env.test -- jest --watchAll --no-cache --config ./test/jest-e2e.json",
     "jsdoc": "jsdoc"
   },
   "dependencies": {
@@ -48,6 +50,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "dotenv-cli": "^7.0.0",
+    "lightcookie": "^1.0.25",
     "pactum": "^3.3.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
