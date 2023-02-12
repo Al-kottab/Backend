@@ -26,4 +26,8 @@ export class AuthSignupDto {
   @IsString()
   @IsOptional()
   creditCard?: string;
+  @ApiProperty({ example: 'student', required: false })
+  @IsString()
+  @IsNotEmpty()
+  type: string;
 }
