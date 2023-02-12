@@ -53,7 +53,6 @@ export class GroupService {
     teacherId: number,
     announcementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
-    if (!groupId) throw new BadRequestException('!يوجد خطأ في رقم الحلقة');
     if (!teacherId)
       throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
     const group: Group = await this.prisma.group.findUnique({
@@ -84,7 +83,6 @@ export class GroupService {
     take: number,
     skip: number, // for pagination
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
-    if (!groupId) throw new BadRequestException('!يوجد خطأ في رقم الحلقة');
     if (!userId)
       throw new UnauthorizedException('!يجب أن تكون منضم لهذه الحلقة');
     // check whether he is a teacher of this group or a student in it
@@ -127,7 +125,6 @@ export class GroupService {
     teacherId: number,
     announcementId: number,
   ): Promise<{ status: string; message: string }> {
-    if (!groupId) throw new BadRequestException('!يوجد خطأ في رقم الحلقة');
     if (!teacherId)
       throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
     const group: Group = await this.prisma.group.findUnique({

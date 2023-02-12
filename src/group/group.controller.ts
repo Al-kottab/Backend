@@ -12,6 +12,7 @@ import {
   UseGuards,
   ParseIntPipe,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -181,6 +182,7 @@ export class GroupController {
   })
   @ApiBearerAuth('token')
   @UseGuards(JwtGuard)
+  @HttpCode(204)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
     @Param('id', ParseIntPipe) groupId: number,
