@@ -99,6 +99,11 @@ export class GroupService {
         where: {
           groupId,
         },
+        orderBy: [
+          {
+            createdAt: 'desc',
+          },
+        ],
       });
     return {
       status: 'success',
