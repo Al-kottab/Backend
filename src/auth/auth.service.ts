@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthSignupDto } from './dto/auth-signup.dto';
 import { AuthDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -36,7 +40,17 @@ export class AuthService {
     const pwMatches = await argon.verify(user.passwordHash, authDto.password);
     // if password incorrect throw exception
     if (!pwMatches) throw new UnauthorizedException('Credentials incorrect');
-    const token = await this.signToken(user.id, user.email);
+    let token;
+    const teacher = this.prisma.teacher.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+    if (teacher != null) {
+      token = await this.signToken(user.id, user.email, 'teacher');
+    } else {
+      token = await this.signToken(user.id, user.email, 'student');
+    }
     delete user.passwordHash;
     return {
       status: 'success',
@@ -61,8 +75,29 @@ export class AuthService {
           phone: authSignupDto.phoneNumber,
         },
       });
+      switch (authSignupDto.type) {
+        case 'teacher':
+          await this.prisma.teacher.create({
+            data: {
+              id: user.id,
+            },
+          });
+          break;
+        case 'student':
+          await this.prisma.student.create({
+            data: {
+              id: user.id,
+            },
+          });
+        default:
+          break;
+      }
 
-      const token = await this.signToken(user.id, user.email);
+      const token = await this.signToken(
+        user.id,
+        user.email,
+        authSignupDto.type,
+      );
       delete user.passwordHash;
       return {
         status: 'success',
@@ -72,7 +107,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new UnauthorizedException('Credentials taken');
+          throw new ForbiddenException('Credentials taken');
         }
       }
       throw error;
@@ -82,10 +117,12 @@ export class AuthService {
   async signToken(
     userId: number,
     email: string,
+    type: string,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
       email,
+      type,
     };
     const secret = this.config.get('JWT_SECRET');
 
