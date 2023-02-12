@@ -127,7 +127,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':id/announcements')
   getGroupAnnouncements(
-    @GetUser('id') userId: number,
+    @GetUser() userId: number,
     @Param('id', ParseIntPipe) groupId: number,
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
     return this.groupService.getAnnouncements(groupId, userId);
@@ -141,16 +141,16 @@ export class GroupController {
   })
   @ApiNotFoundResponse({ description: 'group is not found.' })
   @ApiBearerAuth('token')
-  @UseGuards(JwtGuard) // TODO: change this to teacher guard when token has type in it
+  @UseGuards(JwtGuard)
   @Post(':id/announcements')
   createGroupAnnouncement(
     @Param('id', ParseIntPipe) groupId: number,
-    @GetUser('id') userId: number, // TODO: change this to get teacher when token has type in it
+    @GetUser('teacher') teacherId: number,
     @Body() createAnnouncementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
     return this.groupService.createAnnouncement(
       groupId,
-      userId,
+      teacherId,
       createAnnouncementDto,
     );
   }
@@ -177,16 +177,16 @@ export class GroupController {
     description: 'you must be the group owner to delete announcement.',
   })
   @ApiBearerAuth('token')
-  @UseGuards(JwtGuard) // TODO: change this to teacher guard when token has type in it
+  @UseGuards(JwtGuard)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
     @Param('id', ParseIntPipe) groupId: number,
-    @GetUser('id') userId: number, // TODO: change this to get teacher when token has type in it
+    @GetUser('teacher') teacherId: number,
     @Param('announcement_id', ParseIntPipe) announcementId: number,
   ): Promise<{ status: string; message: string }> {
     return this.groupService.deleteAnnouncement(
       groupId,
-      userId,
+      teacherId,
       announcementId,
     );
   }

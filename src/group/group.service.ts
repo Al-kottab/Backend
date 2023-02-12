@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -44,23 +45,24 @@ export class GroupService {
   }
   async createAnnouncement(
     groupId: number,
-    userId: number, // TODO: change to teacherId
+    teacherId: number,
     announcementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
+    if (!groupId || !teacherId)
+      throw new BadRequestException('!يوجد خطأ في رقم المحفظ أو رقم الحلقة');
     const group: Group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
       },
     });
     if (!group) throw new NotFoundException('!لا وجود لهذه الحلقة');
-    if (group.userId !== userId) {
-      // TODO: change to teacherId
+    if (group.teacherId !== teacherId) {
       throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
     }
     const announcement: GroupAnnouncement =
       await this.prisma.groupAnnouncement.create({
         data: {
-          userId, // TODO: change to teacherId
+          teacherId,
           groupId,
           ...announcementDto,
         },
@@ -74,6 +76,8 @@ export class GroupService {
     groupId: number,
     userId: number,
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
+    if (!groupId || !userId)
+      throw new BadRequestException('!يوجد خطأ في رقم المستخدم أو رقم الحلقة');
     // check whether he is a teacher of this group or a student in it
     const group: Group = await this.prisma.group.findUnique({
       where: {
@@ -84,10 +88,10 @@ export class GroupService {
     const isStudent: number = await this.prisma.groupStudent.count({
       where: {
         groupId,
-        userId, // TODO: change to studentId
+        studentId: userId,
       },
     });
-    if (group.userId !== userId && isStudent < 1) {
+    if (group.teacherId !== userId && isStudent < 1) {
       throw new UnauthorizedException('!يجب أن تكون منضم لهذه الحلقة');
     }
     const announcements: GroupAnnouncement[] =
@@ -103,17 +107,18 @@ export class GroupService {
   }
   async deleteAnnouncement(
     groupId: number,
-    userId: number, // TODO: change to teacherId
+    teacherId: number,
     announcementId: number,
   ): Promise<{ status: string; message: string }> {
+    if (!groupId || !teacherId)
+      throw new BadRequestException('!يوجد خطأ في رقم المحفظ أو رقم الحلقة');
     const group: Group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
       },
     });
     if (!group) throw new NotFoundException('!لا وجود لهذه الحلقة');
-    if (group.userId !== userId) {
-      // TODO: change to teacherId
+    if (group.teacherId !== teacherId) {
       throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
     }
     try {
@@ -123,12 +128,12 @@ export class GroupService {
         },
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       throw new NotFoundException('!لا وجود لهذا الإعلان');
     }
     return {
       status: 'success',
-      message: '.تم مسح الإعلان بنجاح',
+      message: '.تم حذف الإعلان بنجاح',
     };
   }
   uploadLogo(groupId: string, file: Express.Multer.File) {
