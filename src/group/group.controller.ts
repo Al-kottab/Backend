@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UseGuards,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -129,8 +130,10 @@ export class GroupController {
   getGroupAnnouncements(
     @GetUser() userId: number,
     @Param('id', ParseIntPipe) groupId: number,
+    @Query('limit') limit: string,
+    @Query('skip') skip: string,
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
-    return this.groupService.getAnnouncements(groupId, userId);
+    return this.groupService.getAnnouncements(groupId, userId, +limit, +skip);
   }
 
   @ApiOperation({ description: 'create group announcement.' })

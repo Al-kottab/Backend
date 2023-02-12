@@ -3,10 +3,10 @@ import { IsNumber, IsOptional } from 'class-validator';
 export class ApiFeaturesDto {
   @IsNumber()
   @IsOptional()
-  skip?: number = 0; // = is a default value
+  skip?: number;
   @IsNumber()
   @IsOptional()
-  limit?: number = 15;
+  take?: number; // take is a limit
   @IsNumber()
   @IsOptional()
   where?: any = {};

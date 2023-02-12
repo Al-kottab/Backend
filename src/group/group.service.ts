@@ -5,7 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
+import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { ApiFeaturesService } from '../utils/api-features/api-features.service';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
@@ -13,7 +15,10 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 
 @Injectable()
 export class GroupService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private apiFeatures: ApiFeaturesService,
+  ) {}
 
   removeBadgeFromStudent(groupId: string, studentId: string) {
     return { status: 'success' };
@@ -75,6 +80,8 @@ export class GroupService {
   async getAnnouncements(
     groupId: number,
     userId: number,
+    take: number,
+    skip: number, // for pagination
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
     if (!groupId || !userId)
       throw new BadRequestException('!يوجد خطأ في رقم المستخدم أو رقم الحلقة');
@@ -94,17 +101,20 @@ export class GroupService {
     if (group.teacherId !== userId && isStudent < 1) {
       throw new UnauthorizedException('!يجب أن تكون منضم لهذه الحلقة');
     }
-    const announcements: GroupAnnouncement[] =
-      await this.prisma.groupAnnouncement.findMany({
-        where: {
-          groupId,
+    const filter: ApiFeaturesDto = {
+      where: {
+        groupId,
+      },
+      orderBy: [
+        {
+          createdAt: 'desc', // asc for ascendingly
         },
-        orderBy: [
-          {
-            createdAt: 'desc',
-          },
-        ],
-      });
+      ],
+      take, // take is a limit
+      skip,
+    };
+    const announcements: GroupAnnouncement[] =
+      await this.apiFeatures.getPaginationList('groupAnnouncement', filter);
     return {
       status: 'success',
       announcements,
