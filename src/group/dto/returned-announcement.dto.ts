@@ -5,6 +5,6 @@ export class ReturnedAnnouncementDto {
   @ApiProperty({ example: 'success' })
   status: string;
 
-  @ApiProperty({ description: 'announcement text' })
+  @ApiProperty({ description: 'announcement' })
   announcement: AnnouncementDto;
 }
