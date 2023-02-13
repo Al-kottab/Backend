@@ -29,6 +29,8 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -126,15 +128,27 @@ export class GroupController {
     description: 'you must be inside the group to get the group announcements.',
   })
   @ApiBearerAuth('token')
+  @ApiParam({ name: 'id', description: 'group id' })
+  @ApiQuery({
+    name: 'limit',
+    description: 'a number determines the wanted amount of announcements',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    description:
+      'a number determines the wanted page of announcements (starts from 1, 2, ....)',
+    required: false,
+  })
   @UseGuards(JwtGuard)
   @Get(':id/announcements')
   getGroupAnnouncements(
     @GetUser() userId: number,
     @Param('id', ParseIntPipe) groupId: number,
     @Query('limit') limit: string,
-    @Query('skip') skip: string,
+    @Query('page') page: string,
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
-    return this.groupService.getAnnouncements(groupId, userId, +limit, +skip);
+    return this.groupService.getAnnouncements(groupId, userId, +limit, +page);
   }
 
   @ApiOperation({ description: 'create group announcement.' })

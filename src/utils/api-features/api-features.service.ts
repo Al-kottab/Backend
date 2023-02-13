@@ -12,7 +12,10 @@ export class ApiFeaturesService {
   ): Promise<any[]> {
     if (!model) throw new InternalServerErrorException('No model provided!');
     apiFeaturesDto.take = apiFeaturesDto.take || 15;
-    apiFeaturesDto.skip = apiFeaturesDto.skip || 0;
+    apiFeaturesDto.page = apiFeaturesDto.page || 1;
+    apiFeaturesDto.page = apiFeaturesDto.page <= 0 ? 1 : apiFeaturesDto.page;
+    apiFeaturesDto.skip = (apiFeaturesDto.page - 1) * apiFeaturesDto.take;
+    delete apiFeaturesDto.page;
     return this.prisma[model].findMany({
       ...apiFeaturesDto,
     });

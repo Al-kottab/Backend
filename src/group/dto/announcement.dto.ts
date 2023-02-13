@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class AnnouncementDto {
   @ApiProperty({ example: 1, required: true })
-  id: string;
+  id: number;
 
   @ApiProperty({ example: 'announcement text', required: true })
   text: string;

@@ -1,8 +1,8 @@
 {
   "name": "backend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.0.0",
+  "description": "This is a website for helping the Quraan teachers to manage their students groups",
+  "author": "Omar Fareed, Mohamed Nabil, and Moaz Mohamed",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -35,7 +35,7 @@
     "test:e2e": "dotenv -e .env.test -- jest --watchAll --no-cache --config ./test/jest-e2e.json",
     "pretest:e2e:win": "npm run db:test:restart:win",
     "test:e2e:win": "dotenv -e .env.test -- jest --watchAll --no-cache --config ./test/jest-e2e.json",
-    "jsdoc": "jsdoc"
+    "doc": "npx @compodoc/compodoc -p tsconfig.compodoc.json --serve"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

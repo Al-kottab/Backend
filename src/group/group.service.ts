@@ -103,8 +103,8 @@ export class GroupService {
   async getAnnouncements(
     groupId: number,
     userId: number,
-    take: number,
-    skip: number, // for pagination
+    take: number, // for pagination
+    page: number, // for pagination
   ): Promise<{ status: string; announcements: GroupAnnouncement[] }> {
     if (!userId)
       throw new UnauthorizedException('!يجب أن تكون منضم لهذه الحلقة');
@@ -134,7 +134,7 @@ export class GroupService {
         },
       ],
       take, // take is a limit
-      skip,
+      page,
     };
     const announcements: GroupAnnouncement[] =
       await this.apiFeatures.getPaginationList('groupAnnouncement', filter);
@@ -143,6 +143,13 @@ export class GroupService {
       announcements,
     };
   }
+  /**
+   * delete a certain group announcement by id
+   * @param groupId the group's id
+   * @param teacherId the teacher's id
+   * @param announcementId the announcement's id
+   * @returns status and a message for success or fail
+   */
   async deleteAnnouncement(
     groupId: number,
     teacherId: number,
