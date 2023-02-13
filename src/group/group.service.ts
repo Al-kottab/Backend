@@ -13,8 +13,16 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
+/**
+ * service for group module
+ */
 @Injectable()
 export class GroupService {
+  /**
+   * class constructor
+   * @param prisma prisma service
+   * @param apiFeatures  API features service
+   */
   constructor(
     private prisma: PrismaService,
     private apiFeatures: ApiFeaturesService,
@@ -48,6 +56,13 @@ export class GroupService {
   getGroupStudents(groupId: string) {
     return [];
   }
+  /**
+   * creates an announcement
+   * @param groupId the group's id
+   * @param teacherId the teacher's id
+   * @param announcementDto encapsulates announcement creation data
+   * @returns the created announcement
+   */
   async createAnnouncement(
     groupId: number,
     teacherId: number,
@@ -77,6 +92,14 @@ export class GroupService {
       announcement,
     };
   }
+  /**
+   * get a certain group announcements
+   * @param groupId the group's id
+   * @param userId the user's id
+   * @param take a number determines the wanted amount of announcements
+   * @param page a number determines the wanted page of announcements (starts from 1, 2, ....)
+   * @returns the group's announcements
+   */
   async getAnnouncements(
     groupId: number,
     userId: number,

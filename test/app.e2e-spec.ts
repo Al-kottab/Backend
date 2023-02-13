@@ -98,7 +98,7 @@ describe('App e2e', () => {
       text: 'نص إعلان',
     };
     const announcementDto2: CreateAnnouncementDto = {
-      text: 'نص إعلان ثاني',
+      text: 'نص إعلان ثان',
     };
     let group: Group;
     describe('Create a group announcement', () => {
