@@ -165,10 +165,10 @@ describe('App e2e', () => {
       });
     });
     describe('Get group announcements', () => {
-      it('should get 1 group announcement because of skip 1 and all announcements of this group are 2 by a joined user to this group', async () => {
+      it('should get 1 group announcement because of page 2, limit 1 and all announcements of this group are 2 by a joined user to this group', async () => {
         return pactum
           .spec()
-          .get(subDomain + `${group.id}/announcements?skip=1`)
+          .get(subDomain + `${group.id}/announcements?page=2&limit=1`)
           .withHeaders('Authorization', `Bearer $S{studentToken}`)
           .expectStatus(200)
           .expect((ctx) => {

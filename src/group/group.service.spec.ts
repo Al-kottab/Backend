@@ -112,7 +112,7 @@ describe('GroupService', () => {
           .fn()
           .mockReturnValueOnce(announcements);
         expect(
-          (await service.getAnnouncements(group.id, userStudent.id, 2, 0))
+          (await service.getAnnouncements(group.id, userStudent.id, 2, 1))
             .announcements,
         ).toStrictEqual(announcements);
       });
@@ -121,7 +121,7 @@ describe('GroupService', () => {
         prisma.groupStudent.count = jest.fn().mockReturnValueOnce(1);
         apiFeatures.getPaginationList = jest.fn().mockReturnValueOnce(null);
         await expect(
-          service.getAnnouncements(group.id, null, 2, 0),
+          service.getAnnouncements(group.id, null, 2, 1),
         ).rejects.toThrowError(UnauthorizedException);
       });
       it('should return NotFoundException because the group with this id is not found', async () => {
@@ -129,7 +129,7 @@ describe('GroupService', () => {
         prisma.groupStudent.count = jest.fn().mockReturnValueOnce(1);
         apiFeatures.getPaginationList = jest.fn().mockReturnValueOnce(null);
         await expect(
-          service.getAnnouncements(500, userStudent.id, 2, 0),
+          service.getAnnouncements(500, userStudent.id, 2, 1),
         ).rejects.toThrowError(NotFoundException);
       });
       it('should return UnauthorizedException because passed userId is not equal to group.teacherId and the user is not a student in this group', async () => {
@@ -137,7 +137,7 @@ describe('GroupService', () => {
         prisma.groupStudent.count = jest.fn().mockReturnValueOnce(0);
         apiFeatures.getPaginationList = jest.fn().mockReturnValueOnce(null);
         await expect(
-          service.getAnnouncements(group.id, 500, 2, 0),
+          service.getAnnouncements(group.id, 500, 2, 1),
         ).rejects.toThrowError(UnauthorizedException);
       });
     });
