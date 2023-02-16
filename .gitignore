@@ -38,3 +38,6 @@ lerna-debug.log*
 /.env
 /.env.test
 
+#Documentation (to be removed)
+/documentation
+

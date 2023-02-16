@@ -1,15 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { AnnouncementDto } from './announcement.dto';
 
 export class ReturnedAnnouncementDto {
-  @ApiProperty({ description: 'announcement id' })
-  id: string;
+  @ApiProperty({ example: 'success' })
+  status: string;
 
-  @ApiProperty({ description: 'announcement text' })
-  text: string;
-
-  @ApiProperty({ description: 'information about the teacher' })
-  teacherInfo: any;
-
-  @ApiProperty({ description: 'date which announcement is created at' })
-  createdAt: Date;
+  @ApiProperty({ description: 'announcement' })
+  announcement: AnnouncementDto;
 }

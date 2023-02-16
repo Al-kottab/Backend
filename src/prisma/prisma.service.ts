@@ -15,15 +15,16 @@ export class PrismaService extends PrismaClient {
   }
   cleanDb() {
     return this.$transaction([
+      this.studentBadge.deleteMany(),
+      this.badge.deleteMany(),
+      this.groupAnnouncement.deleteMany(),
+      this.organizationTeacher.deleteMany(),
+      this.groupStudent.deleteMany(),
+      this.group.deleteMany(),
+      this.organization.deleteMany(),
       this.student.deleteMany(),
       this.teacher.deleteMany(),
       this.user.deleteMany(),
-      this.organization.deleteMany(),
-      this.group.deleteMany(),
-      this.groupStudent.deleteMany(),
-      this.organizationTeacher.deleteMany(),
-      this.badge.deleteMany(),
-      this.studentBadge.deleteMany(),
     ]);
   }
 }
