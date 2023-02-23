@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -80,15 +81,15 @@ model Organization {
 }
 
 model Group {
-  id               Int                @id @default(autoincrement())
-  name             String
-  createdAt        DateTime           @default(now())
-  teacher          Teacher            @relation(fields: [teacherId], references: [id])
-  teacherId        Int
-  organization     Organization?      @relation(fields: [organizationId], references: [id])
-  organizationId   Int?
-  groupStudent     GroupStudent[]
-  groupAppointment GroupAppointment[]
+  id                Int                 @id @default(autoincrement())
+  name              String
+  createdAt         DateTime            @default(now())
+  teacher           Teacher             @relation(fields: [teacherId], references: [id])
+  teacherId         Int
+  organization      Organization?       @relation(fields: [organizationId], references: [id])
+  organizationId    Int?
+  groupStudent      GroupStudent[]
+  groupAppointment  GroupAppointment[]
   groupAnnouncement GroupAnnouncement[]
 
   @@map("groups")
@@ -125,13 +126,13 @@ model GroupAppointment {
 }
 
 model GroupAnnouncement {
-  id               Int                @id @default(autoincrement())
-  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  id        Int      @id @default(autoincrement())
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
   teacherId Int
-  group     Group   @relation(fields: [groupId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id])
   groupId   Int
-  text String
-  createdAt        DateTime           @default(now())
+  text      String
+  createdAt DateTime @default(now())
 
   @@map("groupAnnouncemets")
 }
