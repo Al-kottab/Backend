@@ -45,7 +45,7 @@ import { ReturnedAnnouncementsDto } from './dto/returned-announcements.dto';
 import { JwtTeacherGuard } from 'src/auth/guard/teacher.guard';
 
 @Controller('group')
-@ApiTags('groups')
+@ApiTags('group')
 export class GroupController {
   constructor(private readonly groupService: GroupService) { }
 
