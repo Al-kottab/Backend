@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UpdateInfoDto } from './dto/update-info.dto';
 import { ReturnedUserInfoDto } from './dto/returned-user-info.dto';
 import { GetUserInfoDto } from './dto/get-user-info.dto';
@@ -9,7 +9,20 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  async validateIfTeacher(id: number, email: string): Promise<void | never> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email, id
+      },
+      include: {
+        teacher: true
+      }
+    })
+    if (user?.teacher?.id !== id) {
+      throw new UnauthorizedException('يجب أن تكون شيخًا لتقوم بهذا');
+    }
+  }
+  constructor(private prisma: PrismaService) { }
 
   updateInfo(updateInfoDto: UpdateInfoDto) {
     return returnedUserDto;

@@ -26,7 +26,7 @@ export class GroupService {
   constructor(
     private prisma: PrismaService,
     private apiFeatures: ApiFeaturesService,
-  ) {}
+  ) { }
 
   removeBadgeFromStudent(groupId: string, studentId: string) {
     return { status: 'success' };
@@ -188,7 +188,7 @@ export class GroupService {
     return [];
   }
   create(createGroupDto: CreateGroupDto) {
-    return { id: 'group_id' };
+    
   }
 
   findAll() {
