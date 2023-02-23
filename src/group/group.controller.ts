@@ -44,7 +44,7 @@ import { GroupAnnouncement } from '@prisma/client';
 import { ReturnedAnnouncementsDto } from './dto/returned-announcements.dto';
 import { JwtTeacherGuard } from 'src/auth/guard/teacher.guard';
 
-@Controller('groups')
+@Controller('group')
 @ApiTags('groups')
 export class GroupController {
   constructor(private readonly groupService: GroupService) { }
