@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
 import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
@@ -187,8 +188,14 @@ export class GroupService {
   getMyGroups(userId: string) {
     return [];
   }
-  create(createGroupDto: CreateGroupDto) {
-    
+  async create(createGroupDto: CreateGroupDto, teacherId: number) {
+    const group = await this.prisma.group.create({
+      data: {
+        name: createGroupDto.name,
+        teacherId
+      }
+    })
+    return { id: group.id }
   }
 
   findAll() {

@@ -42,11 +42,12 @@ import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { GroupAnnouncement } from '@prisma/client';
 import { ReturnedAnnouncementsDto } from './dto/returned-announcements.dto';
+import { JwtTeacherGuard } from 'src/auth/guard/teacher.guard';
 
 @Controller('groups')
 @ApiTags('groups')
 export class GroupController {
-  constructor(private readonly groupService: GroupService) {}
+  constructor(private readonly groupService: GroupService) { }
 
   @ApiOperation({ description: 'create group' })
   @ApiCreatedResponse({
@@ -55,9 +56,10 @@ export class GroupController {
   @ApiUnauthorizedResponse({
     description: 'you must be a teacher to create a group',
   })
+  @UseGuards(JwtTeacherGuard)
   @Post()
-  create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupService.create(createGroupDto);
+  create(@Body() createGroupDto: CreateGroupDto, @GetUser('id') teacherId: number) {
+    return this.groupService.create(createGroupDto, teacherId);
   }
 
   @ApiOperation({ description: 'get my groups' })
