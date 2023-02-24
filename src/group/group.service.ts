@@ -188,6 +188,7 @@ export class GroupService {
   getMyGroups(userId: string) {
     return [];
   }
+
   async create(createGroupDto: CreateGroupDto, teacherId: number) {
     const group = await this.prisma.group.create({
       data: {

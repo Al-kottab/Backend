@@ -12,7 +12,6 @@ export class UserService {
   constructor(private prisma: PrismaService) { }
 
   async validateIfTeacher(id: number, email: string): Promise<void | never> {
-    console.log(email)
     const user = await this.prisma.user.findFirst({
       where: {
         email, id

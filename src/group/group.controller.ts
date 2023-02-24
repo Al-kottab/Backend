@@ -59,8 +59,7 @@ export class GroupController {
   })
   @UseGuards(JwtTeacherGuard)
   @Post()
-  create(@Body() createGroupDto: CreateGroupDto, @GetUser('sub') teacherId: number, @GetUser() user, @Req() req) {
-    console.log(teacherId)
+  create(@Body() createGroupDto: CreateGroupDto, @GetUser('sub') teacherId: number) {
     return this.groupService.create(createGroupDto, teacherId);
   }
 
