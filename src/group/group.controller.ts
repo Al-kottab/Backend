@@ -13,6 +13,7 @@ import {
   ParseIntPipe,
   Query,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -58,7 +59,8 @@ export class GroupController {
   })
   @UseGuards(JwtTeacherGuard)
   @Post()
-  create(@Body() createGroupDto: CreateGroupDto, @GetUser('id') teacherId: number) {
+  create(@Body() createGroupDto: CreateGroupDto, @GetUser('id') teacherId: number, @GetUser() user, @Req() req) {
+    console.log(req.user)
     return this.groupService.create(createGroupDto, teacherId);
   }
 

@@ -6,7 +6,8 @@ export class TokenDataDto {
     email: string;
 
     @IsNumber()
-    id: number;
+    // TODO: will be id
+    sub: number;
 
     // TODO: change type class to enum type
     type: string;

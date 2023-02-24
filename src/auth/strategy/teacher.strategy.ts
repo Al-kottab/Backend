@@ -16,7 +16,7 @@ export class JwtTeacherStrategy extends PassportStrategy(Strategy, 'jwt-teacher'
     }
 
     async validate(tokenDataDto: TokenDataDto): Promise<TokenDataDto> {
-        await this.userService.validateIfTeacher(tokenDataDto.id, tokenDataDto.email);
+        await this.userService.validateIfTeacher(tokenDataDto.sub, tokenDataDto.email);
         return tokenDataDto;
     }
 }
