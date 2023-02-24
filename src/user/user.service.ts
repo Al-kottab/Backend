@@ -9,21 +9,22 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
+  constructor(private prisma: PrismaService) { }
+
   async validateIfTeacher(id: number, email: string): Promise<void | never> {
     console.log(email)
     const user = await this.prisma.user.findFirst({
       where: {
-        email
+        email, id
       },
-      // include: {
-      //   teacher: true
-      // }
+      include: {
+        teacher: true
+      }
     })
-    // if (user?.teacher?.id !== id) {
-    //   throw new UnauthorizedException('يجب أن تكون شيخًا لتقوم بهذا');
-    // }
+    if (!user?.teacher) {
+      throw new UnauthorizedException('يجب أن تكون شيخًا لتقوم بهذا');
+    }
   }
-  constructor(private prisma: PrismaService) { }
 
   updateInfo(updateInfoDto: UpdateInfoDto) {
     return returnedUserDto;
