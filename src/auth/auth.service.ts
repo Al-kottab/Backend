@@ -24,7 +24,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
-  ) {}
+  ) { }
 
   async login(authDto: AuthDto): Promise<ReturnedUserAndTokenDto> {
     // find the user by email

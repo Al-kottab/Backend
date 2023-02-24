@@ -43,10 +43,10 @@ import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { GroupAnnouncement } from '@prisma/client';
 import { ReturnedAnnouncementsDto } from './dto/returned-announcements.dto';
-import { JwtTeacherGuard } from 'src/auth/guard/teacher.guard';
+import { JwtTeacherGuard } from '../auth/guard/teacher.guard';
 
-@Controller('group')
-@ApiTags('group')
+@Controller('groups')
+@ApiTags('groups')
 export class GroupController {
   constructor(private readonly groupService: GroupService) { }
 
@@ -146,7 +146,7 @@ export class GroupController {
   @UseGuards(JwtGuard)
   @Get(':id/announcements')
   getGroupAnnouncements(
-    @GetUser() userId: number,
+    @GetUser('sub') userId: number,
     @Param('id', ParseIntPipe) groupId: number,
     @Query('limit') limit: string,
     @Query('page') page: string,
@@ -162,11 +162,11 @@ export class GroupController {
   })
   @ApiNotFoundResponse({ description: 'group is not found.' })
   @ApiBearerAuth('token')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtTeacherGuard)
   @Post(':id/announcements')
   createGroupAnnouncement(
     @Param('id', ParseIntPipe) groupId: number,
-    @GetUser('teacher') teacherId: number,
+    @GetUser('sub') teacherId: number,
     @Body() createAnnouncementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
     return this.groupService.createAnnouncement(
@@ -198,12 +198,12 @@ export class GroupController {
     description: 'you must be the group owner to delete announcement.',
   })
   @ApiBearerAuth('token')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtTeacherGuard)
   @HttpCode(204)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
     @Param('id', ParseIntPipe) groupId: number,
-    @GetUser('teacher') teacherId: number,
+    @GetUser('sub') teacherId: number,
     @Param('announcement_id', ParseIntPipe) announcementId: number,
   ): Promise<{ status: string; message: string }> {
     return this.groupService.deleteAnnouncement(

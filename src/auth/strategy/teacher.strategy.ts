@@ -21,3 +21,5 @@ export class JwtTeacherStrategy extends PassportStrategy(Strategy, 'jwt-teacher'
     }
 }
 
+// student
+// student -> secure
