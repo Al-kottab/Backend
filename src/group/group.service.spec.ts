@@ -2,6 +2,7 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Group, GroupAnnouncement, Teacher, User } from '@prisma/client';
+import { UserService } from '../user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiFeaturesService } from '../utils/api-features/api-features.service';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
@@ -11,7 +12,9 @@ describe('GroupService', () => {
   let service: GroupService;
   let prisma: PrismaService;
   let apiFeatures: ApiFeaturesService;
-  beforeEach(async () => {
+  let userService: UserService;
+  let realTeacher1: Teacher;
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GroupService,
@@ -24,6 +27,8 @@ describe('GroupService', () => {
     service = module.get<GroupService>(GroupService);
     prisma = module.get<PrismaService>(PrismaService);
     apiFeatures = module.get<ApiFeaturesService>(ApiFeaturesService);
+    userService = module.get<UserService>(UserService);
+    realTeacher1 = await userService.
   });
   describe('Announcement', () => {
     const userStudent: User = {
@@ -66,6 +71,14 @@ describe('GroupService', () => {
     const announcementDto: CreateAnnouncementDto = {
       text: 'نص إعلان',
     };
+    describe('creage group', () => {
+      beforeAll(() => {
+        {
+
+        }
+      })
+      it('must create group successfully', async () => { })
+    })
     describe('createAnnouncement', () => {
       it('should create an announcement and return it', async () => {
         prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
@@ -147,7 +160,7 @@ describe('GroupService', () => {
         prisma.groupAnnouncement.delete = jest
           .fn()
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+          .mockImplementationOnce(() => { });
         expect(
           (await service.deleteAnnouncement(group.id, teacher1.id, 1)).status,
         ).toEqual('success');
@@ -157,7 +170,7 @@ describe('GroupService', () => {
         prisma.groupAnnouncement.delete = jest
           .fn()
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+          .mockImplementationOnce(() => { });
         await expect(
           service.deleteAnnouncement(group.id, null, 1),
         ).rejects.toThrowError(UnauthorizedException);
@@ -167,7 +180,7 @@ describe('GroupService', () => {
         prisma.groupAnnouncement.delete = jest
           .fn()
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+          .mockImplementationOnce(() => { });
         await expect(
           service.deleteAnnouncement(500, teacher1.id, 1),
         ).rejects.toThrowError(NotFoundException);
@@ -177,7 +190,7 @@ describe('GroupService', () => {
         prisma.groupAnnouncement.delete = jest
           .fn()
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+          .mockImplementationOnce(() => { });
         await expect(
           service.deleteAnnouncement(group.id, 2, 1),
         ).rejects.toThrowError(UnauthorizedException);
