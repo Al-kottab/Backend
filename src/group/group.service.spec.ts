@@ -1,4 +1,8 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Group, GroupAnnouncement, Teacher, User } from '@prisma/client';
@@ -69,9 +73,7 @@ describe('GroupService', () => {
     describe('createAnnouncement', () => {
       it('should create an announcement and return it', async () => {
         prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.create = jest
-          .fn()
-          .mockReturnValueOnce(announcements[0]);
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce(announcements);
         expect(
           (
             await service.createAnnouncement(
@@ -82,26 +84,23 @@ describe('GroupService', () => {
           ).announcement,
         ).toStrictEqual(announcements[0]);
       });
-      it('should return UnauthorizedException because teacherId is null (user is a student)', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.create = jest.fn().mockReturnValueOnce(null);
+      it('should return UnprocessableEntityException because teacherId is null (user is a student)', async () => {
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(
           service.createAnnouncement(group.id, null, announcementDto),
-        ).rejects.toThrowError(UnauthorizedException);
+        ).rejects.toThrowError(UnprocessableEntityException);
       });
-      it('should return NotFoundException because the group with this id is not found', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(null);
-        prisma.groupAnnouncement.create = jest.fn().mockReturnValueOnce(null);
+      it('should return UnprocessableEntityException because the group with this id is not found', async () => {
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(
           service.createAnnouncement(500, teacher1.id, announcementDto),
-        ).rejects.toThrowError(NotFoundException);
+        ).rejects.toThrowError(UnprocessableEntityException);
       });
-      it('should return UnauthorizedException because passed teacherId is not equal to group.teacherId', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.create = jest.fn().mockReturnValueOnce(null);
+      it('should return UnprocessableEntityException because passed teacherId is not equal to group.teacherId', async () => {
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(
           service.createAnnouncement(group.id, 2, announcementDto),
-        ).rejects.toThrowError(UnauthorizedException);
+        ).rejects.toThrowError(UnprocessableEntityException);
       });
     });
     describe('getAnnouncements', () => {

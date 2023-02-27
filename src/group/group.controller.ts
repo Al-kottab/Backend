@@ -33,6 +33,7 @@ import {
   ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateLogoDto } from './dto/update-logo.dto';
@@ -152,12 +153,14 @@ export class GroupController {
   }
 
   @ApiOperation({ description: 'create group announcement.' })
-  @ApiCreatedResponse({ description: 'announcement is created successfully.' })
-  @ApiUnauthorizedResponse({
-    description: 'you must be the group owner to create announcement.',
+  @ApiCreatedResponse({
+    description: 'announcement is created successfully.',
     type: ReturnedAnnouncementDto,
   })
-  @ApiNotFoundResponse({ description: 'group is not found.' })
+  @ApiUnprocessableEntityResponse({
+    description:
+      "you must be the group owner to create announcement, or this group doesn't exist.",
+  })
   @ApiBearerAuth('token')
   @UseGuards(JwtGuard)
   @Post(':id/announcements')
