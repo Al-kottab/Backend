@@ -202,15 +202,10 @@ export class GroupController {
   @HttpCode(204)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
-    @Param('id', ParseIntPipe) groupId: number,
     @GetUser('teacher') teacherId: number,
     @Param('announcement_id', ParseIntPipe) announcementId: number,
   ): Promise<{ status: string; message: string }> {
-    return this.groupService.deleteAnnouncement(
-      groupId,
-      teacherId,
-      announcementId,
-    );
+    return this.groupService.deleteAnnouncement(teacherId, announcementId);
   }
 
   //TODO: add student dto here
