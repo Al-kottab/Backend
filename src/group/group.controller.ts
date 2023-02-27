@@ -193,9 +193,9 @@ export class GroupController {
       },
     },
   })
-  @ApiNotFoundResponse({ description: 'group is not found.' })
-  @ApiUnauthorizedResponse({
-    description: 'you must be the group owner to delete announcement.',
+  @ApiUnprocessableEntityResponse({
+    description:
+      "you must be the group announcement owner to delete it, or it doesn't exist.",
   })
   @ApiBearerAuth('token')
   @UseGuards(JwtGuard)
