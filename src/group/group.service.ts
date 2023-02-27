@@ -71,7 +71,7 @@ export class GroupService {
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
     const createdAnnouncements: GroupAnnouncement[] = await this.prisma
       .$queryRaw`
-      INSERT INTO "groupAnnouncemets"("teacherId", "groupId", "text")
+      INSERT INTO "groupAnnouncements"("teacherId", "groupId", "text")
       SELECT t."id", g."id", ${announcementDto.text} 
       FROM teachers AS t 
       JOIN groups AS g 
@@ -161,7 +161,7 @@ WHERE ga."id" = 33 AND t."id" = ga."teacherId"
     let deletedAnnouncements: GroupAnnouncement[];
     try {
       deletedAnnouncements = await this.prisma.$queryRaw`
-        DELETE FROM "groupAnnouncemets" AS ga 
+        DELETE FROM "groupAnnouncements" AS ga 
         USING "teachers" AS t 
         WHERE ga."id" = ${announcementId}
         AND t."id" = ${teacherId} 
