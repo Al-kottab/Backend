@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { INestApplication } from '@nestjs/common/interfaces';
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
@@ -139,29 +139,29 @@ describe('App e2e', () => {
             announcementId2 = ctx.res.body.announcement.id;
           });
       });
-      it('should return unauthorized for creating a group announcement by a student', async () => {
+      it('should return unprocessable entity for creating a group announcement by a student', async () => {
         return pactum
           .spec()
           .post(subDomain + `${group.id}/announcements`)
           .withHeaders('Authorization', `Bearer $S{studentToken}`)
           .withBody(announcementDto1)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
-      it('should return not found for creating a group announcement of wrong id', async () => {
+      it('should return unprocessable entity for creating a group announcement of wrong id', async () => {
         return pactum
           .spec()
           .post(subDomain + `99999/announcements`)
           .withHeaders('Authorization', `Bearer $S{teacherToken}`)
           .withBody(announcementDto1)
-          .expectStatus(404);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
-      it('should return unauthorized for creating a group announcement by a teacher but not this group teacher', async () => {
+      it('should return unprocessable entity for creating a group announcement by a teacher but not this group teacher', async () => {
         return pactum
           .spec()
           .post(subDomain + `${group.id}/announcements`)
           .withHeaders('Authorization', `Bearer $S{teacherToken2}`)
           .withBody(announcementDto1)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
     describe('Get group announcements', () => {
