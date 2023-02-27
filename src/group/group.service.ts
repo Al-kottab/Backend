@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
 import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
@@ -12,6 +12,7 @@ import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { dummyGroupAnnouncement } from './dummy-data/dummy-group-announcement';
 
 /**
  * service for group module
@@ -68,25 +69,20 @@ export class GroupService {
     teacherId: number,
     announcementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
-    if (!teacherId)
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
-    const group: Group = await this.prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-    if (!group) throw new NotFoundException('!لا وجود لهذه الحلقة');
-    if (group.teacherId !== teacherId) {
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
+    const createdAnnouncements: GroupAnnouncement[] = await this.prisma
+      .$queryRaw`INSERT INTO "groupAnnouncemets"("teacherId", "groupId", "text")
+    SELECT t."id", g."id", ${announcementDto.text} 
+    FROM teachers AS t 
+    JOIN groups AS g 
+    ON t."id" = g."teacherId"
+    WHERE g."id" =${groupId} AND t."id"=${teacherId}
+    RETURNING *`;
+    if (createdAnnouncements.length === 0) {
+      throw new UnprocessableEntityException(
+        '!يجب أن تكون المحفظ لهذه الحلقة أو لا وجود لهذه الحلقة',
+      );
     }
-    const announcement: GroupAnnouncement =
-      await this.prisma.groupAnnouncement.create({
-        data: {
-          teacherId,
-          groupId,
-          ...announcementDto,
-        },
-      });
+    const announcement: GroupAnnouncement = createdAnnouncements[0];
     return {
       status: 'success',
       announcement,
