@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
 import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
@@ -12,6 +12,7 @@ import { CreateAnnouncementDto } from './dto/create-announcements.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ReturnedGroupDto } from './dto/returned-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { dummyGroupAnnouncement } from './dummy-data/dummy-group-announcement';
 
 /**
  * service for group module
@@ -68,25 +69,21 @@ export class GroupService {
     teacherId: number,
     announcementDto: CreateAnnouncementDto,
   ): Promise<{ status: string; announcement: GroupAnnouncement }> {
-    if (!teacherId)
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
-    const group: Group = await this.prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-    if (!group) throw new NotFoundException('!لا وجود لهذه الحلقة');
-    if (group.teacherId !== teacherId) {
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
+    const createdAnnouncements: GroupAnnouncement[] = await this.prisma
+      .$queryRaw`
+      INSERT INTO "groupAnnouncements"("teacherId", "groupId", "text")
+      SELECT t."id", g."id", ${announcementDto.text} 
+      FROM teachers AS t 
+      JOIN groups AS g 
+      ON t."id" = g."teacherId"
+      WHERE g."id" =${groupId} AND t."id"=${teacherId}
+      RETURNING *`;
+    if (createdAnnouncements.length === 0) {
+      throw new UnprocessableEntityException(
+        '!يجب أن تكون المحفظ لهذه الحلقة أو لا وجود لهذه الحلقة',
+      );
     }
-    const announcement: GroupAnnouncement =
-      await this.prisma.groupAnnouncement.create({
-        data: {
-          teacherId,
-          groupId,
-          ...announcementDto,
-        },
-      });
+    const announcement: GroupAnnouncement = createdAnnouncements[0];
     return {
       status: 'success',
       announcement,
@@ -150,32 +147,36 @@ export class GroupService {
    * @param announcementId the announcement's id
    * @returns status and a message for success or fail
    */
+
+  /*
+DELETE FROM public."groupAnnouncemets" AS ga 
+USING public."teachers" AS t 
+WHERE ga."id" = 33 AND t."id" = ga."teacherId"
+
+	/* This query checks that the teacher is this group teacher, and if that is fine, inserts the values */
   async deleteAnnouncement(
-    groupId: number,
     teacherId: number,
     announcementId: number,
   ): Promise<{ status: string; message: string }> {
-    if (!teacherId)
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
-    const group: Group = await this.prisma.group.findUnique({
-      where: {
-        id: groupId,
-      },
-    });
-    if (!group) throw new NotFoundException('!لا وجود لهذه الحلقة');
-    if (group.teacherId !== teacherId) {
-      throw new UnauthorizedException('!يجب أن تكون المحفظ لهذه الحلقة');
-    }
+    let deletedAnnouncements: GroupAnnouncement[];
     try {
-      await this.prisma.groupAnnouncement.delete({
-        where: {
-          id: announcementId,
-        },
-      });
+      deletedAnnouncements = await this.prisma.$queryRaw`
+        DELETE FROM "groupAnnouncements" AS ga 
+        USING "teachers" AS t 
+        WHERE ga."id" = ${announcementId}
+        AND t."id" = ${teacherId} 
+        AND t."id" = ga."teacherId"
+        RETURNING *`;
     } catch (err) {
       console.error(err);
-      throw new NotFoundException('!لا وجود لهذا الإعلان');
+      throw new UnprocessableEntityException(
+        '!لا وجود لهذا الإعلان أو ليس لديك الحق لحذفه',
+      );
     }
+    if (deletedAnnouncements.length === 0)
+      throw new UnprocessableEntityException(
+        '!لا وجود لهذا الإعلان أو ليس لديك الحق لحذفه',
+      );
     return {
       status: 'success',
       message: '.تم حذف الإعلان بنجاح',

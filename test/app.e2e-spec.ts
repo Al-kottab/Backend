@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { INestApplication } from '@nestjs/common/interfaces';
 import { Test } from '@nestjs/testing';
 import * as pactum from 'pactum';
@@ -133,35 +133,35 @@ describe('App e2e', () => {
           .post(subDomain + `${group.id}/announcements`)
           .withHeaders('Authorization', `Bearer $S{teacherToken}`)
           .withBody(announcementDto2)
-          .expectStatus(201)
+          .expectStatus(HttpStatus.CREATED)
           .expectBodyContains(announcementDto2.text)
           .expect((ctx) => {
             announcementId2 = ctx.res.body.announcement.id;
           });
       });
-      it('should return unauthorized for creating a group announcement by a student', async () => {
+      it('should return unprocessable entity for creating a group announcement by a student', async () => {
         return pactum
           .spec()
           .post(subDomain + `${group.id}/announcements`)
           .withHeaders('Authorization', `Bearer $S{studentToken}`)
           .withBody(announcementDto1)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
-      it('should return not found for creating a group announcement of wrong id', async () => {
+      it('should return unprocessable entity for creating a group announcement of wrong id', async () => {
         return pactum
           .spec()
           .post(subDomain + `99999/announcements`)
           .withHeaders('Authorization', `Bearer $S{teacherToken}`)
           .withBody(announcementDto1)
-          .expectStatus(404);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
-      it('should return unauthorized for creating a group announcement by a teacher but not this group teacher', async () => {
+      it('should return unprocessable entity for creating a group announcement by a teacher but not this group teacher', async () => {
         return pactum
           .spec()
           .post(subDomain + `${group.id}/announcements`)
           .withHeaders('Authorization', `Bearer $S{teacherToken2}`)
           .withBody(announcementDto1)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
     describe('Get group announcements', () => {
@@ -221,28 +221,21 @@ describe('App e2e', () => {
           .spec()
           .delete(subDomain + `${group.id}/announcements/${announcementId1}`)
           .withHeaders('Authorization', `Bearer $S{teacherToken}`)
-          .expectStatus(204);
+          .expectStatus(HttpStatus.NO_CONTENT);
       });
-      it('should return unauthorized for deleting a group announcement by a student', async () => {
+      it('should return unprocessable entity for deleting a group announcement by a student', async () => {
         return pactum
           .spec()
           .delete(subDomain + `${group.id}/announcements/${announcementId2}`)
           .withHeaders('Authorization', `Bearer $S{studentToken}`)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
-      it('should return not found for deleting a group announcement of wrong id', async () => {
-        return pactum
-          .spec()
-          .delete(subDomain + `99999/announcements/${announcementId2}`)
-          .withHeaders('Authorization', `Bearer $S{teacherToken}`)
-          .expectStatus(404);
-      });
-      it('should return unauthorized for deleting a group announcement by a teacher but not this group teacher', async () => {
+      it('should return unprocessable entity for deleting a group announcement by a teacher but not this group teacher', async () => {
         return pactum
           .spec()
           .delete(subDomain + `${group.id}/announcements/${announcementId2}`)
           .withHeaders('Authorization', `Bearer $S{teacherToken2}`)
-          .expectStatus(401);
+          .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
   });

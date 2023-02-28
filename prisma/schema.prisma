@@ -134,7 +134,7 @@ model GroupAnnouncement {
   text      String
   createdAt DateTime @default(now())
 
-  @@map("groupAnnouncemets")
+  @@map("groupAnnouncements")
 }
 
 enum Day {
