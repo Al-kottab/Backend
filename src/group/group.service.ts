@@ -1,10 +1,12 @@
 import {
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
+import { Group, GroupAnnouncement, GroupStudent, Prisma } from '@prisma/client';
 import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiFeaturesService } from '../utils/api-features/api-features.service';
@@ -44,8 +46,40 @@ export class GroupService {
   leaveGroup(groupId: string) {
     return { status: 'success' };
   }
-  askToJoinAGroup(groupId: string) {
-    return { status: 'success' };
+  /**
+   * ask to join a group
+   * @param groupId the group's id
+   * @param studentId the student's id
+   * @returns status and a message for success or fail
+   */
+  async askToJoinAGroup(
+    groupId: number,
+    studentId: number,
+  ): Promise<{ status: string; message: string }> {
+    try {
+      const insertedStudent: GroupStudent =
+        await this.prisma.groupStudent.create({
+          data: {
+            studentId,
+            groupId,
+            isPending: true,
+          },
+        });
+    } catch (err) {
+      console.log(err);
+      if (err.code === 'P2002')
+        throw new ConflictException('!هذا الطلب تكرر من قبل');
+      if (err.code === 'P2003')
+        throw new NotFoundException('!هذه المجموعة غير موجودة');
+      throw new InternalServerErrorException(
+        '.حدث خطأ لدينا! لا يمكن تسجيل طلبك الأخير لدخول الحلقة',
+      );
+    }
+    // TODO: send a notification to the group teacher to accept or decline this joiningS
+    return {
+      status: 'success',
+      message: '.تم إرسال طلب دخول للحلقة بنجاح',
+    };
   }
   markStudentAsHafez(groupId: string, studentId: string) {
     return { status: 'success' };
@@ -147,13 +181,6 @@ export class GroupService {
    * @param announcementId the announcement's id
    * @returns status and a message for success or fail
    */
-
-  /*
-DELETE FROM public."groupAnnouncemets" AS ga 
-USING public."teachers" AS t 
-WHERE ga."id" = 33 AND t."id" = ga."teacherId"
-
-	/* This query checks that the teacher is this group teacher, and if that is fine, inserts the values */
   async deleteAnnouncement(
     teacherId: number,
     announcementId: number,

@@ -218,7 +218,7 @@ export class GroupController {
     description: 'you must be inside a group to see its students',
   })
   @Get('/:id/students')
-  getGroupStudents(@Param(':id') groupId: string) {
+  getGroupStudents(@Param('id') groupId: string) {
     return this.groupService.getGroupStudents(groupId);
   }
 
@@ -234,7 +234,7 @@ export class GroupController {
     description: 'you must be the group owner to see this list',
   })
   @Get('/:id/students/status/incomplete')
-  getUnhafezStudents(@Param(':id') groupId: string) {
+  getUnhafezStudents(@Param('id') groupId: string) {
     return this.groupService.getUnhafezStudents(groupId);
   }
 
@@ -247,8 +247,8 @@ export class GroupController {
   })
   @Post('/:id/students/:student_id/status/complete')
   markStudentAsHafez(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.markStudentAsHafez(groupId, studentId);
   }
@@ -261,9 +261,13 @@ export class GroupController {
     description: 'you must be a student to request to join this group',
   })
   @ApiBadRequestResponse({ description: 'wrong group id' })
+  @UseGuards(JwtGuard)
   @Put('/:id/students/me')
-  askToJoinGroup(@Param(':id') groupId: string) {
-    return this.groupService.askToJoinAGroup(groupId);
+  askToJoinGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('student') studentId: number,
+  ) {
+    return this.groupService.askToJoinAGroup(groupId, studentId);
   }
 
   @ApiOperation({
@@ -275,7 +279,7 @@ export class GroupController {
   })
   @ApiBadRequestResponse({ description: 'you are not inside such a group' })
   @Delete('/:id/students/me')
-  leaveGroup(@Param(':id') groupId: string) {
+  leaveGroup(@Param('id') groupId: string) {
     return this.groupService.leaveGroup(groupId);
   }
 
@@ -292,8 +296,8 @@ export class GroupController {
   @ApiBadRequestResponse({ description: 'wrong group id' })
   @Put('/:id/students/:student_id')
   acceptUserToJoinAGroup(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.acceptStudent(groupId, studentId);
   }
@@ -310,8 +314,8 @@ export class GroupController {
   })
   @Delete('/:id/students/:student_id')
   deleteUserFromAGroup(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.deleteStudent(groupId, studentId);
   }
@@ -328,8 +332,8 @@ export class GroupController {
   })
   @Put('/:id/students/:student_id/badge')
   giveBadgeToStudent(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.giveBadgeToStudent(groupId, studentId);
   }
@@ -347,8 +351,8 @@ export class GroupController {
   })
   @Delete('/:id/students/:student_id/badge')
   removeBadgeFromStudent(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.removeBadgeFromStudent(groupId, studentId);
   }
