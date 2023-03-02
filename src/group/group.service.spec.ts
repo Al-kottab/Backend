@@ -147,21 +147,13 @@ describe('GroupService', () => {
         ).toEqual('success');
       });
       it('should return UnprocessableEntityException because teacherId is null (user is a student)', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.delete = jest
-          .fn()
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(service.deleteAnnouncement(null, 1)).rejects.toThrowError(
           UnprocessableEntityException,
         );
       });
       it('should return UnprocessableEntityException because passed teacherId is not equal to group.teacherId', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.delete = jest
-          .fn()
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(service.deleteAnnouncement(2, 1)).rejects.toThrowError(
           UnprocessableEntityException,
         );
