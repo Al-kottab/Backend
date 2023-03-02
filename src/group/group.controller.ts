@@ -282,9 +282,13 @@ export class GroupController {
     description: 'you must login as a student to do this action',
   })
   @ApiBadRequestResponse({ description: 'you are not inside such a group' })
+  @UseGuards(JwtGuard)
   @Delete('/:id/students/me')
-  leaveGroup(@Param('id') groupId: string) {
-    return this.groupService.leaveGroup(groupId);
+  leaveGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('student') studentId: number,
+  ) {
+    return this.groupService.leaveGroup(groupId, studentId);
   }
 
   @ApiOperation({ description: 'accept student to join a group' })

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -43,8 +44,32 @@ export class GroupService {
   acceptStudent(groupId: string, studentId: string) {
     return { status: 'success' };
   }
-  leaveGroup(groupId: string) {
-    return { status: 'success' };
+  /**
+   * delete a certain group student by group id and student id
+   * @param groupId the group's id
+   * @param studentId the student's id
+   * @returns status and a message for success or fail
+   */
+  async leaveGroup(
+    groupId: number,
+    studentId: number,
+  ): Promise<{ status: string; message: string }> {
+    let deletedGroupStudents: GroupStudent[];
+    try {
+      deletedGroupStudents = await this.prisma.$queryRaw`
+        DELETE FROM "groupStudents" AS gs
+        WHERE gs."groupId" = ${groupId}
+        AND gs."studentId" = ${studentId}
+        RETURNING *`;
+    } catch (err) {
+      throw new BadRequestException('!أنت غير مشترك في هذه المجموعة');
+    }
+    if (deletedGroupStudents.length === 0)
+      throw new BadRequestException('!أنت غير مشترك في هذه المجموعة');
+    return {
+      status: 'success',
+      message: '.تم الخروج من المجموعة بنجاح',
+    };
   }
   /**
    * ask to join a group
@@ -193,7 +218,6 @@ export class GroupService {
         AND t."id" = ga."teacherId"
         RETURNING *`;
     } catch (err) {
-      console.error(err);
       throw new UnprocessableEntityException(
         '!لا وجود لهذا الإعلان أو ليس لديك الحق لحذفه',
       );
