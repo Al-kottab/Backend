@@ -110,6 +110,7 @@ model GroupStudent {
   studentId Int
   group     Group   @relation(fields: [groupId], references: [id])
   groupId   Int
+  isPending      Boolean @default(false)
 
   @@id([groupId, studentId])
   @@map("groupStudents")

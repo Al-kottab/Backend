@@ -13,6 +13,7 @@ import {
   ParseIntPipe,
   Query,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -23,6 +24,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
   ApiNoContentResponse,
@@ -199,7 +201,7 @@ export class GroupController {
   })
   @ApiBearerAuth('token')
   @UseGuards(JwtGuard)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
     @GetUser('teacher') teacherId: number,
@@ -218,7 +220,7 @@ export class GroupController {
     description: 'you must be inside a group to see its students',
   })
   @Get('/:id/students')
-  getGroupStudents(@Param(':id') groupId: string) {
+  getGroupStudents(@Param('id') groupId: string) {
     return this.groupService.getGroupStudents(groupId);
   }
 
@@ -234,7 +236,7 @@ export class GroupController {
     description: 'you must be the group owner to see this list',
   })
   @Get('/:id/students/status/incomplete')
-  getUnhafezStudents(@Param(':id') groupId: string) {
+  getUnhafezStudents(@Param('id') groupId: string) {
     return this.groupService.getUnhafezStudents(groupId);
   }
 
@@ -247,36 +249,48 @@ export class GroupController {
   })
   @Post('/:id/students/:student_id/status/complete')
   markStudentAsHafez(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.markStudentAsHafez(groupId, studentId);
   }
 
   @ApiOperation({ description: 'ask to join a group' })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: 'request is sent successfully',
   })
   @ApiUnauthorizedResponse({
     description: 'you must be a student to request to join this group',
   })
-  @ApiBadRequestResponse({ description: 'wrong group id' })
+  @ApiNotFoundResponse({ description: 'wrong group id' })
+  @ApiConflictResponse({
+    description: 'this request to join this group is done before',
+  })
+  @UseGuards(JwtGuard)
   @Put('/:id/students/me')
-  askToJoinGroup(@Param(':id') groupId: string) {
-    return this.groupService.askToJoinAGroup(groupId);
+  askToJoinGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('student') studentId: number,
+  ) {
+    return this.groupService.askToJoinAGroup(groupId, studentId);
   }
 
   @ApiOperation({
     description: 'leave a group or decline join request',
   })
-  @ApiOkResponse({ description: 'group is left successfully' })
+  @ApiNoContentResponse({ description: 'group is left successfully' })
   @ApiUnauthorizedResponse({
     description: 'you must login as a student to do this action',
   })
   @ApiBadRequestResponse({ description: 'you are not inside such a group' })
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id/students/me')
-  leaveGroup(@Param(':id') groupId: string) {
-    return this.groupService.leaveGroup(groupId);
+  leaveGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('student') studentId: number,
+  ) {
+    return this.groupService.leaveGroup(groupId, studentId);
   }
 
   @ApiOperation({ description: 'accept student to join a group' })
@@ -292,8 +306,8 @@ export class GroupController {
   @ApiBadRequestResponse({ description: 'wrong group id' })
   @Put('/:id/students/:student_id')
   acceptUserToJoinAGroup(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.acceptStudent(groupId, studentId);
   }
@@ -310,8 +324,8 @@ export class GroupController {
   })
   @Delete('/:id/students/:student_id')
   deleteUserFromAGroup(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.deleteStudent(groupId, studentId);
   }
@@ -328,8 +342,8 @@ export class GroupController {
   })
   @Put('/:id/students/:student_id/badge')
   giveBadgeToStudent(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.giveBadgeToStudent(groupId, studentId);
   }
@@ -347,8 +361,8 @@ export class GroupController {
   })
   @Delete('/:id/students/:student_id/badge')
   removeBadgeFromStudent(
-    @Param(':id') groupId: string,
-    @Param(':student_id') studentId: string,
+    @Param('id') groupId: string,
+    @Param('student_id') studentId: string,
   ) {
     return this.groupService.removeBadgeFromStudent(groupId, studentId);
   }

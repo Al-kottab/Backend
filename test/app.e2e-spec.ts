@@ -238,5 +238,52 @@ describe('App e2e', () => {
           .expectStatus(HttpStatus.UNPROCESSABLE_ENTITY);
       });
     });
+    describe('Ask to join a group', () => {
+      it('should ask to join a group by a student', async () => {
+        // TODO: this queries are to be removed when create group and join a group are implemented
+        group = await prisma.group.create({
+          data: {
+            name: '2الحق',
+            teacherId,
+          },
+        });
+        return pactum
+          .spec()
+          .put(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.OK)
+          .expectBodyContains('success');
+      });
+      it('should return conflict exception for trying to request to join the group twice', async () => {
+        return pactum
+          .spec()
+          .put(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.CONFLICT);
+      });
+      it('should return not found exception for trying to join a group with wrong id', async () => {
+        return pactum
+          .spec()
+          .put(subDomain + `99999/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.NOT_FOUND);
+      });
+    });
+    describe('Leave a group', () => {
+      it('should leave a group', async () => {
+        return pactum
+          .spec()
+          .delete(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.NO_CONTENT);
+      });
+      it('should return bad request exception for trying to leave a group and he is not a member of it', async () => {
+        return pactum
+          .spec()
+          .delete(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.BAD_REQUEST);
+      });
+    });
   });
 });

@@ -1,11 +1,20 @@
 import {
+  BadRequestException,
+  ConflictException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Group, GroupAnnouncement, Teacher, User } from '@prisma/client';
+import {
+  Group,
+  GroupAnnouncement,
+  GroupStudent,
+  Student,
+  Teacher,
+  User,
+} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiFeaturesService } from '../utils/api-features/api-features.service';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
@@ -147,25 +156,84 @@ describe('GroupService', () => {
         ).toEqual('success');
       });
       it('should return UnprocessableEntityException because teacherId is null (user is a student)', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.delete = jest
-          .fn()
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(service.deleteAnnouncement(null, 1)).rejects.toThrowError(
           UnprocessableEntityException,
         );
       });
       it('should return UnprocessableEntityException because passed teacherId is not equal to group.teacherId', async () => {
-        prisma.group.findUnique = jest.fn().mockReturnValueOnce(group);
-        prisma.groupAnnouncement.delete = jest
-          .fn()
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .mockImplementationOnce(() => {});
+        prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
         await expect(service.deleteAnnouncement(2, 1)).rejects.toThrowError(
           UnprocessableEntityException,
         );
       });
+    });
+  });
+  describe('askToJoinAGroup', () => {
+    const student1: Student = {
+      id: 1,
+    };
+    const group: Group = {
+      id: 1,
+      name: 'الحق',
+      teacherId: 1,
+      createdAt: new Date(Date.now()),
+      organizationId: null,
+    };
+    it('should ask to join a group', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {});
+      const response = await service.askToJoinAGroup(group.id, student1.id);
+      expect(response.status).toBe('success');
+    });
+    it('should return ConflictException because request is done before', async () => {
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {
+        throw {
+          code: 'P2002',
+        };
+      });
+      await expect(
+        service.askToJoinAGroup(group.id, student1.id),
+      ).rejects.toThrowError(ConflictException);
+    });
+    it('should return NotFoundException because the group with this id is not found', async () => {
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {
+        throw {
+          code: 'P2003',
+        };
+      });
+      await expect(
+        service.askToJoinAGroup(500, student1.id),
+      ).rejects.toThrowError(NotFoundException);
+    });
+  });
+  describe('leaveGroup', () => {
+    const student1: Student = {
+      id: 1,
+    };
+    const group: Group = {
+      id: 1,
+      name: 'الحق',
+      teacherId: 1,
+      createdAt: new Date(Date.now()),
+      organizationId: null,
+    };
+    const groupStudent: GroupStudent = {
+      studentId: student1.id,
+      groupId: group.id,
+      isPending: true,
+    };
+    it('should leave a group', async () => {
+      prisma.$queryRaw = jest.fn().mockReturnValueOnce([groupStudent]);
+      expect((await service.leaveGroup(group.id, student1.id)).status).toEqual(
+        'success',
+      );
+    });
+    it('should return BadRequestException for trying to leave a group and he is not a member of it', async () => {
+      prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
+      await expect(
+        service.leaveGroup(group.id, student1.id),
+      ).rejects.toThrowError(BadRequestException);
     });
   });
 });

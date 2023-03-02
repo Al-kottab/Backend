@@ -1,10 +1,13 @@
 import {
+  BadRequestException,
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Group, GroupAnnouncement, Prisma } from '@prisma/client';
+import { Group, GroupAnnouncement, GroupStudent, Prisma } from '@prisma/client';
 import { ApiFeaturesDto } from 'src/utils/api-features/dto/api-features.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiFeaturesService } from '../utils/api-features/api-features.service';
@@ -41,11 +44,65 @@ export class GroupService {
   acceptStudent(groupId: string, studentId: string) {
     return { status: 'success' };
   }
-  leaveGroup(groupId: string) {
-    return { status: 'success' };
+  /**
+   * delete a certain group student by group id and student id
+   * @param groupId the group's id
+   * @param studentId the student's id
+   * @returns status and a message for success or fail
+   */
+  async leaveGroup(
+    groupId: number,
+    studentId: number,
+  ): Promise<{ status: string; message: string }> {
+    let deletedGroupStudents: GroupStudent[];
+    try {
+      deletedGroupStudents = await this.prisma.$queryRaw`
+        DELETE FROM "groupStudents" AS gs
+        WHERE gs."groupId" = ${groupId}
+        AND gs."studentId" = ${studentId}
+        RETURNING *`;
+    } catch (err) {
+      throw new BadRequestException('!أنت غير مشترك في هذه المجموعة');
+    }
+    if (deletedGroupStudents.length === 0)
+      throw new BadRequestException('!أنت غير مشترك في هذه المجموعة');
+    return {
+      status: 'success',
+      message: '.تم الخروج من المجموعة بنجاح',
+    };
   }
-  askToJoinAGroup(groupId: string) {
-    return { status: 'success' };
+  /**
+   * ask to join a group
+   * @param groupId the group's id
+   * @param studentId the student's id
+   * @returns status and a message for success or fail
+   */
+  async askToJoinAGroup(
+    groupId: number,
+    studentId: number,
+  ): Promise<{ status: string; message: string }> {
+    try {
+      await this.prisma.groupStudent.create({
+        data: {
+          studentId,
+          groupId,
+          isPending: true,
+        },
+      });
+    } catch (err) {
+      if (err.code === 'P2002')
+        throw new ConflictException('!هذا الطلب تكرر من قبل');
+      if (err.code === 'P2003')
+        throw new NotFoundException('!هذه المجموعة غير موجودة');
+      throw new InternalServerErrorException(
+        '.حدث خطأ لدينا! لا يمكن تسجيل طلبك الأخير لدخول الحلقة',
+      );
+    }
+    // TODO: send a notification to the group teacher to accept or decline this joining
+    return {
+      status: 'success',
+      message: '.تم إرسال طلب دخول للحلقة بنجاح',
+    };
   }
   markStudentAsHafez(groupId: string, studentId: string) {
     return { status: 'success' };
@@ -147,13 +204,6 @@ export class GroupService {
    * @param announcementId the announcement's id
    * @returns status and a message for success or fail
    */
-
-  /*
-DELETE FROM public."groupAnnouncemets" AS ga 
-USING public."teachers" AS t 
-WHERE ga."id" = 33 AND t."id" = ga."teacherId"
-
-	/* This query checks that the teacher is this group teacher, and if that is fine, inserts the values */
   async deleteAnnouncement(
     teacherId: number,
     announcementId: number,
@@ -168,7 +218,6 @@ WHERE ga."id" = 33 AND t."id" = ga."teacherId"
         AND t."id" = ga."teacherId"
         RETURNING *`;
     } catch (err) {
-      console.error(err);
       throw new UnprocessableEntityException(
         '!لا وجود لهذا الإعلان أو ليس لديك الحق لحذفه',
       );
