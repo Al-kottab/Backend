@@ -57,16 +57,14 @@ export class GroupService {
     studentId: number,
   ): Promise<{ status: string; message: string }> {
     try {
-      const insertedStudent: GroupStudent =
-        await this.prisma.groupStudent.create({
-          data: {
-            studentId,
-            groupId,
-            isPending: true,
-          },
-        });
+      await this.prisma.groupStudent.create({
+        data: {
+          studentId,
+          groupId,
+          isPending: true,
+        },
+      });
     } catch (err) {
-      console.log(err);
       if (err.code === 'P2002')
         throw new ConflictException('!هذا الطلب تكرر من قبل');
       if (err.code === 'P2003')
@@ -75,7 +73,7 @@ export class GroupService {
         '.حدث خطأ لدينا! لا يمكن تسجيل طلبك الأخير لدخول الحلقة',
       );
     }
-    // TODO: send a notification to the group teacher to accept or decline this joiningS
+    // TODO: send a notification to the group teacher to accept or decline this joining
     return {
       status: 'success',
       message: '.تم إرسال طلب دخول للحلقة بنجاح',

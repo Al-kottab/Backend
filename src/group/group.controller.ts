@@ -23,6 +23,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
   ApiNoContentResponse,
@@ -254,13 +255,16 @@ export class GroupController {
   }
 
   @ApiOperation({ description: 'ask to join a group' })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: 'request is sent successfully',
   })
   @ApiUnauthorizedResponse({
     description: 'you must be a student to request to join this group',
   })
-  @ApiBadRequestResponse({ description: 'wrong group id' })
+  @ApiNotFoundResponse({ description: 'wrong group id' })
+  @ApiConflictResponse({
+    description: 'this request to join this group is done before',
+  })
   @UseGuards(JwtGuard)
   @Put('/:id/students/me')
   askToJoinGroup(
