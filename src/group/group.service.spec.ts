@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   NotFoundException,
   UnauthorizedException,
@@ -9,6 +10,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   Group,
   GroupAnnouncement,
+  GroupStudent,
   Student,
   Teacher,
   User,
@@ -168,17 +170,6 @@ describe('GroupService', () => {
     });
   });
   describe('askToJoinAGroup', () => {
-    const userStudent: User = {
-      id: 3,
-      name: '3 معاذ محمد',
-      username: 'MoazHassan2023',
-      email: 'moaz3@gmail.com',
-      passwordHash: 'wedwed4564',
-      createdAt: new Date(Date.now()),
-      phone: null,
-      creditCard: null,
-      photo: null,
-    };
     const student1: Student = {
       id: 1,
     };
@@ -214,6 +205,35 @@ describe('GroupService', () => {
       await expect(
         service.askToJoinAGroup(500, student1.id),
       ).rejects.toThrowError(NotFoundException);
+    });
+  });
+  describe('Announcement', () => {
+    const student1: Student = {
+      id: 1,
+    };
+    const group: Group = {
+      id: 1,
+      name: 'الحق',
+      teacherId: 1,
+      createdAt: new Date(Date.now()),
+      organizationId: null,
+    };
+    const groupStudent: GroupStudent = {
+      studentId: student1.id,
+      groupId: group.id,
+      isPending: true,
+    };
+    it('should leave a group', async () => {
+      prisma.$queryRaw = jest.fn().mockReturnValueOnce([groupStudent]);
+      expect((await service.leaveGroup(group.id, student1.id)).status).toEqual(
+        'success',
+      );
+    });
+    it('should return BadRequestException for trying to leave a group and he is not a member of it', async () => {
+      prisma.$queryRaw = jest.fn().mockReturnValueOnce([]);
+      await expect(
+        service.leaveGroup(group.id, student1.id),
+      ).rejects.toThrowError(BadRequestException);
     });
   });
 });
