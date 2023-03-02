@@ -207,7 +207,7 @@ describe('GroupService', () => {
       ).rejects.toThrowError(NotFoundException);
     });
   });
-  describe('Announcement', () => {
+  describe('leaveGroup', () => {
     const student1: Student = {
       id: 1,
     };
