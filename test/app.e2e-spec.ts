@@ -269,5 +269,21 @@ describe('App e2e', () => {
           .expectStatus(HttpStatus.NOT_FOUND);
       });
     });
+    describe('Leave a group', () => {
+      it('should leave a group', async () => {
+        return pactum
+          .spec()
+          .delete(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.NO_CONTENT);
+      });
+      it('should return bad request exception for trying to leave a group and he is not a member of it', async () => {
+        return pactum
+          .spec()
+          .delete(subDomain + `${group.id}/students/me`)
+          .withHeaders('Authorization', `Bearer $S{studentToken}`)
+          .expectStatus(HttpStatus.BAD_REQUEST);
+      });
+    });
   });
 });

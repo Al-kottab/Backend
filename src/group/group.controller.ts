@@ -13,6 +13,7 @@ import {
   ParseIntPipe,
   Query,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -200,7 +201,7 @@ export class GroupController {
   })
   @ApiBearerAuth('token')
   @UseGuards(JwtGuard)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id/announcements/:announcement_id')
   deleteAnnouncement(
     @GetUser('teacher') teacherId: number,
@@ -277,12 +278,13 @@ export class GroupController {
   @ApiOperation({
     description: 'leave a group or decline join request',
   })
-  @ApiOkResponse({ description: 'group is left successfully' })
+  @ApiNoContentResponse({ description: 'group is left successfully' })
   @ApiUnauthorizedResponse({
     description: 'you must login as a student to do this action',
   })
   @ApiBadRequestResponse({ description: 'you are not inside such a group' })
   @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id/students/me')
   leaveGroup(
     @Param('id', ParseIntPipe) groupId: number,
