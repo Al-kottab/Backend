@@ -1,11 +1,18 @@
 import {
+  ConflictException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Group, GroupAnnouncement, Teacher, User } from '@prisma/client';
+import {
+  Group,
+  GroupAnnouncement,
+  Student,
+  Teacher,
+  User,
+} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApiFeaturesService } from '../utils/api-features/api-features.service';
 import { CreateAnnouncementDto } from './dto/create-announcements.dto';
@@ -158,6 +165,55 @@ describe('GroupService', () => {
           UnprocessableEntityException,
         );
       });
+    });
+  });
+  describe('askToJoinAGroup', () => {
+    const userStudent: User = {
+      id: 3,
+      name: '3 معاذ محمد',
+      username: 'MoazHassan2023',
+      email: 'moaz3@gmail.com',
+      passwordHash: 'wedwed4564',
+      createdAt: new Date(Date.now()),
+      phone: null,
+      creditCard: null,
+      photo: null,
+    };
+    const student1: Student = {
+      id: 1,
+    };
+    const group: Group = {
+      id: 1,
+      name: 'الحق',
+      teacherId: 1,
+      createdAt: new Date(Date.now()),
+      organizationId: null,
+    };
+    it('should ask to join a group', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {});
+      const response = await service.askToJoinAGroup(group.id, student1.id);
+      expect(response.status).toBe('success');
+    });
+    it('should return ConflictException because request is done before', async () => {
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {
+        throw {
+          code: 'P2002',
+        };
+      });
+      await expect(
+        service.askToJoinAGroup(group.id, student1.id),
+      ).rejects.toThrowError(ConflictException);
+    });
+    it('should return NotFoundException because the group with this id is not found', async () => {
+      prisma.groupStudent.create = jest.fn().mockImplementationOnce(() => {
+        throw {
+          code: 'P2003',
+        };
+      });
+      await expect(
+        service.askToJoinAGroup(500, student1.id),
+      ).rejects.toThrowError(NotFoundException);
     });
   });
 });
